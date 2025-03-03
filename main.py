@@ -28,13 +28,18 @@ def generate_matrix_and_vector():
 
     row_ind, col_ind = veng_max(d)
     res = np.zeros(d.shape)
-    total = potential_profit
+    total_veng_max = potential_profit
     for i in range(len(row_ind)):
         res[row_ind[i]][col_ind[i]] = 1
-        total += d[row_ind[i]][col_ind[i]]
+        total_veng_max += d[row_ind[i]][col_ind[i]]
+
+    row_ind, col_ind = greedy(d)
+    total_greedy = potential_profit
+    for i in range(len(row_ind)):
+        total_greedy += d[row_ind[i]][col_ind[i]]
 
     sum_entry.delete(0, tk.END)  # Очищаем текстовое поле
-    sum_entry.insert(0, str(round(total,2)))
+    sum_entry.insert(0, str(f"{round(total_veng_max,2)}, {round(total_greedy, 2)}"))
     # Пример вычисления матрицы res (здесь просто случайная матрица 0 и 1)
 
     # Отображаем матрицу c с закрашенными ячейками

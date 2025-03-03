@@ -33,6 +33,21 @@ def veng_max(d):
 
     return col_ind, row_ind
 
+def greedy(d):
+    dT = d.T
+
+    col_ind = []
+
+    for j in range(dT.shape[0]):
+        max_dT = 0
+        max_dT_ind = 0
+        for i in range(dT.shape[1]):
+            if i not in col_ind and dT[j][i] > max_dT:
+                max_dT = dT[j][i]
+                max_dT_ind = i
+        col_ind.append(max_dT_ind)
+    return col_ind, np.arange(0, dT.shape[0])
+
 def main():
     c = create_c(4, 100, 200)
     x = create_x(4,0,1)
