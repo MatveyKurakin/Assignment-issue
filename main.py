@@ -27,6 +27,8 @@ def generate_matrix_and_vector():
     d, potential_profit = create_d(c, x)
 
     row_ind, col_ind = veng_max(d)
+    print(row_ind)
+    print(col_ind)
     res = np.zeros(d.shape)
     total_veng_max = potential_profit
     for i in range(len(row_ind)):
@@ -34,10 +36,12 @@ def generate_matrix_and_vector():
         total_veng_max += d[row_ind[i]][col_ind[i]]
 
     row_ind, col_ind = greedy(d)
+    print(row_ind)
+    print(col_ind)
     total_greedy = potential_profit
     for i in range(len(row_ind)):
         total_greedy += d[row_ind[i]][col_ind[i]]
-
+    print(total_greedy)
     sum_entry.delete(0, tk.END)  # Очищаем текстовое поле
     sum_entry.insert(0, str(f"{round(total_veng_max,2)}, {round(total_greedy, 2)}"))
     # Пример вычисления матрицы res (здесь просто случайная матрица 0 и 1)
