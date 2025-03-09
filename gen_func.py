@@ -36,6 +36,18 @@ def de_increase_by_row(c):
 def de_increase_by_col(c):
     return np.sort(c, axis=0)[::-1]
 
+def create_g(c, x):
+    potential_profit=0
+    d = np.zeros(c.shape)
+    for i in range(c.shape[0]):
+        for j in range(c.shape[1] - 1, -1, -1):
+            potential_profit += x[i] * c[i][j]
+            if(j == c.shape[1] - 1):
+                d[i][j] = (1 - x[i]) * c[i][j]
+            else:
+                d[i][j] = d[i][j+1] + (1 - x[i]) * c[i][j]
+    return d, potential_profit
+
 def create_d(c, x):
     potential_profit=0
     d = np.zeros(c.shape)
@@ -73,7 +85,7 @@ def main():
     x = create_x(4,0,1)
     print("c:\n", c)
     print("x =", x)
-    d, potential_profit = create_d(c, x)
+    d, potential_profit = create_g(c, x)
     print("d:\n", d)
     print("t_sum =", potential_profit)
 
