@@ -15,6 +15,16 @@ from scipy.optimize import linear_sum_assignment
 в c максимум двузначные целые, чтобы красиво вывести
 '''
 
+def sum_matrix(c, x, row_ind):
+    sum=0
+    print(row_ind)
+    for i in range(row_ind.shape[0]):
+        for j in range(0,i):
+            sum += x[row_ind[i]] * c[row_ind[i]][j]
+        for j in range(i,row_ind.shape[0]):
+            sum += c[row_ind[i]][j]
+    return sum
+
 def create_x(n, x_min=0, x_max=1):
     x = np.random.uniform(x_min, x_max, size=n)
     x = np.round(x, 2)
@@ -52,12 +62,9 @@ def create_d(c, x):
     potential_profit=0
     d = np.zeros(c.shape)
     for i in range(c.shape[0]):
-        for j in range(c.shape[1] - 1, -1, -1):
+        for j in range(c.shape[1]):
             potential_profit += x[i] * c[i][j]
-            if(j == c.shape[1] - 1):
-                d[i][j] = (1 - x[i]) * c[i][j]
-            else:
-                d[i][j] = d[i][j+1] + (1 - x[i]) * c[i][j]
+            d[i][j] = (1 - x[i]) * c[i][j]
     return d, potential_profit
 
 def veng_max(d):
@@ -78,7 +85,7 @@ def greedy(d):
                 max_dT = dT[j][i]
                 max_dT_ind = i
         col_ind.append(max_dT_ind)
-    return col_ind, np.arange(0, dT.shape[0])
+    return np.array(col_ind), np.arange(0, dT.shape[0])
 
 def main():
     c = create_c(4, 10, 100)
