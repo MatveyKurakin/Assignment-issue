@@ -3,6 +3,7 @@ from tkinter import ttk
 from tkinter import *
 import numpy as np
 import sys
+import os
 from gen_func import *
 
 def generate_matrix_and_vector():
@@ -151,9 +152,24 @@ def on_close():
     root.destroy()
     sys.exit()
 
+
+if getattr(sys, 'frozen', False):
+    # Если приложение запущено из .exe
+    base_path = sys._MEIPASS
+else:
+    # Если приложение запущено из исходного кода
+    base_path = os.path.dirname(__file__)
+
+path_img_c_max = os.path.join(base_path, 'images', 'c_max.png')
+path_img_c_min = os.path.join(base_path, 'images', 'c_min.png')
+path_img_x_max = os.path.join(base_path, 'images', 'x_max.png')
+path_img_x_min = os.path.join(base_path, 'images', 'x_min.png')
+path_img_group = os.path.join(base_path, 'images', 'group.png')
+path_img_c_empty = os.path.join(base_path, 'images', 'img_461138.png')
+
 # Создание основного окна
 root = tk.Tk()
-root.title("Генерация матрицы и вектора")
+root.title("Группы активов")
 
 root.protocol("WM_DELETE_WINDOW", on_close)
 
@@ -182,7 +198,7 @@ right_frame.grid(row=0, column=1, padx=10, sticky='nsew')
 
 tk.Label(left_frame, text="Входные параметры", font=font_style_1).grid(row=0, columnspan=3)
 
-img_group = tk.PhotoImage(master=left_frame, file = "group.png") # your image
+img_group = tk.PhotoImage(master=left_frame, file=path_img_group) # your image
 label = tk.Label(left_frame, image = img_group) # put the image on a label
 label.grid(row = 1, column = 0) # put the label in the grid
 
@@ -191,7 +207,7 @@ entry_n = tk.Entry(left_frame, font=font_style)
 entry_n.insert(0, "10")  # Значение по умолчанию
 entry_n.grid(row=1, column=2)
 
-img_c_min = tk.PhotoImage(master=left_frame, file = "c_min.png") # your image
+img_c_min = tk.PhotoImage(master=left_frame, file=path_img_c_min) # your image
 label = tk.Label(left_frame, image = img_c_min) # put the image on a label
 label.grid(row = 2, column = 0) # put the label in the grid
 
@@ -200,7 +216,7 @@ entry_c_min = tk.Entry(left_frame, font=font_style)
 entry_c_min.insert(0, "10")  # Значение по умолчанию
 entry_c_min.grid(row=2, column=2)
 
-img_c_max = tk.PhotoImage(master=left_frame, file = "c_max.png") # your image
+img_c_max = tk.PhotoImage(master=left_frame, file=path_img_c_max) # your image
 label = tk.Label(left_frame, image = img_c_max) # put the image on a label
 label.grid(row = 3, column = 0) # put the label in the grid
 
@@ -209,7 +225,7 @@ entry_c_max = tk.Entry(left_frame, font=font_style)
 entry_c_max.insert(0, "99")  # Значение по умолчанию
 entry_c_max.grid(row=3, column=2)
 
-img_x_min = tk.PhotoImage(master=left_frame, file = "x_min.png") # your image
+img_x_min = tk.PhotoImage(master=left_frame, file=path_img_x_min) # your image
 label = tk.Label(left_frame, image = img_x_min) # put the image on a label
 label.grid(row = 4, column = 0) # put the label in the grid
 
@@ -218,7 +234,7 @@ entry_x_min = tk.Entry(left_frame, font=font_style)
 entry_x_min.insert(0, "0.00")  # Значение по умолчанию
 entry_x_min.grid(row=4, column=2)
 
-img_x_max = tk.PhotoImage(master=left_frame, file = "x_max.png") # your image
+img_x_max = tk.PhotoImage(master=left_frame, file=path_img_c_max) # your image
 label = tk.Label(left_frame, image = img_x_max) # put the image on a label
 label.grid(row = 5, column = 0) # put the label in the grid
 
@@ -261,7 +277,7 @@ r_sort_x_3.grid(row=13, columnspan=3, sticky="w")
 
 tk.Label(left_frame, text="Результат", font=font_style_1).grid(row=14, columnspan=3)
 
-my_image = tk.PhotoImage(master=left_frame, file = "img_461138.png") # your image
+my_image = tk.PhotoImage(master=left_frame, file=path_img_c_empty) # your image
 
 label = tk.Label(left_frame, image = my_image) # put the image on a label
 label.grid(row = 15, column = 0) # put the label in the grid
