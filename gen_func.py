@@ -28,6 +28,11 @@ def sum_matrix(c, x, row_ind):
 def create_x(n, x_min=0, x_max=1):
     x = np.random.uniform(x_min, x_max, size=n)
     x = np.round(x, 2)
+    for i in range(n):
+        if(x[i]==1.0):
+            x[i] = 0.99
+        if(x[i]==0):
+            x[i] = 0.01
     return x
 
 def create_c(n, c_min=10, c_max=100):
@@ -45,6 +50,12 @@ def de_increase_by_row(c):
 
 def de_increase_by_col(c):
     return np.sort(c, axis=0)[::-1]
+
+def increase(x):
+    return np.sort(x)
+
+def de_increase(x):
+    return np.sort(x)[::-1]
 
 def create_g(c, x):
     potential_profit=0
