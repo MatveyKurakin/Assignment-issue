@@ -4,6 +4,7 @@ from PIL import Image, ImageTk
 import sys
 import os
 from gen_func import *
+import time
 
 def generate_matrix_and_vector():
 
@@ -41,51 +42,63 @@ def generate_matrix_and_vector():
 
     show_c(c)
 
+    cur_time = time.time()
     total_optimal_max, _, perm_1, perm_2 = optimal(c, k)
+    time_optimal = time.time() - cur_time
     res_optimal_max = np.zeros(c.shape)
     for i in range(len(perm_1)):
         res_optimal_max[perm_1[i]][i] = 1
         res_optimal_max[perm_2[i]][i] = 2
 
+    cur_time = time.time()
     total_naive_max, _, perm_1, perm_2 = naive(c, k)
+    time_naive = time.time() - cur_time
     res_naive_max = np.zeros(c.shape)
     for i in range(len(perm_1)):
         res_naive_max[perm_1[i]][i] = 1
         res_naive_max[perm_2[i]][i] = 2
 
     sum_entry_veng_max.delete(0, tk.END)
-    sum_entry_veng_max.insert(0, str(f"{round(total_optimal_max, 2)}"))
+    sum_entry_veng_max.insert(0, str(f"{round(total_optimal_max, 2)} ({round(time_optimal, 2)} сек.)"))
 
     sum_entry_greedy_d.delete(0, tk.END)
-    sum_entry_greedy_d.insert(0, str(f"{round(total_naive_max, 2)} ({round(total_optimal_max / total_naive_max * 100, 2)}%)"))
+    sum_entry_greedy_d.insert(0, str(f"{round(total_naive_max, 2)} ({round(time_naive, 2)} сек.)"))
+
+    error.delete(0, tk.END)
+    error.insert(0, str(f"{round((total_naive_max - total_optimal_max), 2)} ({round(((total_naive_max - total_optimal_max) / total_optimal_max) * 100, 2)}%)"))
 
     show_matrix_on_frame(c, res_optimal_max, frame_veng_max)
     show_matrix_on_frame(c, res_naive_max, frame_greedy_d)
+
+    tk.Label(left_frame, bg=select_color_1, image=img_c_min).grid(row=24, column = 0)
+    tk.Label(left_frame, text="Первое арт. подразделение", bg=background_color, font=font_style).grid(row=24, column = 1, columnspan=3, sticky="w")
+    tk.Label(left_frame, bg=select_color_2, image=img_c_min).grid(row=25, column=0)
+    tk.Label(left_frame, text="Второе арт. подразделение", bg=background_color, font=font_style).grid(row=25, column=1, columnspan=3, sticky="w")
 
 def show_c(matrix):
     for widget in frame_c_and_x.winfo_children():
         widget.destroy()
 
-    label = tk.Label(frame_c_and_x, text="Месяцы", font=font_style_notebook_frame, bg="lightblue", width=int(matrix_width * matrix.shape[0]*1.06), height=matrix_height, borderwidth=1,
+    label = tk.Label(frame_c_and_x, text="Дни", font=font_style_notebook_frame, bg=matrix_color_1, width=int(matrix_width * matrix.shape[0]*1.06), height=matrix_height, borderwidth=1,
                      relief="solid")
     label.grid(row=0, column=1, columnspan=matrix.shape[1])
 
-    label = tk.Label(frame_c_and_x, text="Группа", font=font_style_notebook_frame, bg="lightpink", width=matrix_width*2, height=matrix_height*2, borderwidth=1,
+    label = tk.Label(frame_c_and_x, text="Подразделения", font=font_style_notebook_frame, bg=matrix_color_2, width=int(matrix_width*2.5), height=matrix_height*2, borderwidth=1,
                      relief="solid")
     label.grid(row=0, column=0, rowspan=2)
 
     for i in range(len(matrix)):
-        label = tk.Label(frame_c_and_x, text=i + 1, font=font_style_notebook_frame, bg="lightblue", width=matrix_width, height=matrix_height,
+        label = tk.Label(frame_c_and_x, text=i + 1, font=font_style_notebook_frame, bg=matrix_color_1, width=matrix_width, height=matrix_height,
                          borderwidth=1, relief="solid")
         label.grid(row=1, column=i + 1)
 
     for i in range(len(matrix)):
-        label = tk.Label(frame_c_and_x, text=f"{i + 1}", font=font_style_notebook_frame, bg="lightpink", width=matrix_width*2, height=matrix_height,
+        label = tk.Label(frame_c_and_x, text=f"{i + 1}", font=font_style_notebook_frame, bg=matrix_color_2, width=int(matrix_width*2.5), height=matrix_height,
                          borderwidth=1,
                          relief="solid")
         label.grid(row=i + 2, column=0)
         for j in range(len(matrix[i])):
-            label = tk.Label(frame_c_and_x, text=int(matrix[i][j]), font=font_style_notebook_frame, bg="white", width=matrix_width, height=matrix_height,
+            label = tk.Label(frame_c_and_x, text=int(matrix[i][j]), font=font_style_notebook_frame, bg=matrix_color_3, width=matrix_width, height=matrix_height,
                              borderwidth=1,
                              relief="solid")
             label.grid(row=i + 2, column=j + 1)  # Сдвигаем на 1 вниз для числа
@@ -94,31 +107,31 @@ def show_c(matrix):
 def show_matrix_on_frame(matrix, res, frame):
     for widget in frame.winfo_children():
         widget.destroy()
-    label = tk.Label(frame, text="Месяцы", font=font_style_notebook_frame, bg="lightblue",
+    label = tk.Label(frame, text="Дни", font=font_style_notebook_frame, bg=matrix_color_1,
                      width=int(matrix_width * matrix.shape[0] * 1.06), height=matrix_height, borderwidth=1,
                      relief="solid")
     label.grid(row=0, column=1, columnspan=matrix.shape[1])
 
-    label = tk.Label(frame, text="Группа", font=font_style_notebook_frame, bg="lightpink", width=matrix_width*2, height=matrix_height*2, borderwidth=1,
+    label = tk.Label(frame, text="Подразделения", font=font_style_notebook_frame, bg=matrix_color_2, width=int(matrix_width*2.5), height=matrix_height*2, borderwidth=1,
                      relief="solid")
     label.grid(row=0, column=0, rowspan=2)
 
     for i in range(len(matrix)):
-        label = tk.Label(frame, text=i + 1, font=font_style_notebook_frame, bg="lightblue", width=matrix_width, height=matrix_height,
+        label = tk.Label(frame, text=i + 1, font=font_style_notebook_frame, bg=matrix_color_1, width=matrix_width, height=matrix_height,
                          borderwidth=1, relief="solid")
         label.grid(row=1, column=i + 1)
 
     for i in range(len(matrix)):
-        label = tk.Label(frame, text=f"{i + 1}", font=font_style_notebook_frame, bg="lightpink", width=matrix_width*2, height=matrix_height,
+        label = tk.Label(frame, text=f"{i + 1}", font=font_style_notebook_frame, bg=matrix_color_2, width=int(matrix_width*2.5), height=matrix_height,
                          borderwidth=1,
                          relief="solid")
         label.grid(row=i + 2, column=0)
         for j in range(len(matrix[i])):
-            color = "white"
+            color = matrix_color_3
             if(res[i][j] == 1):
-                color = "#90EE90"
+                color = select_color_1
             if(res[i][j] == 2):
-                color = "#FFFF00"
+                color = select_color_2
             label = tk.Label(frame, text=int(matrix[i][j]), font=font_style_notebook_frame, bg=color, width=matrix_width, height=matrix_height,
                              borderwidth=1,
                              relief="solid")
@@ -135,7 +148,8 @@ else:
 
 # Создание основного окна
 root = tk.Tk()
-root.title("Группы активов")
+root.title("Огневая мощь противника")
+
 
 root.protocol("WM_DELETE_WINDOW", on_close)
 
@@ -144,9 +158,21 @@ root.protocol("WM_DELETE_WINDOW", on_close)
 path_img_c_max = os.path.join(base_path, 'images', 'c_max.png')
 path_img_c_min = os.path.join(base_path, 'images', 'c_min.png')
 path_img_x_max = os.path.join(base_path, 'images', 'x_max.png')
-path_img_k = os.path.join(base_path, 'images', 'x_min.png')
+path_img_k = os.path.join(base_path, 'images', 'x_min_1.png')
 path_img_group = os.path.join(base_path, 'images', 'group.png')
 path_img_empty = os.path.join(base_path, 'images', 'empty.png')
+
+background_color = "#7BA05B"
+entry_color = "#B8D8B0"
+button_color = "#B0524A"
+matrix_color_1 = "#918151" # left
+matrix_color_2 = "#4F7942" # up
+matrix_color_3 = "#f8f8d9" # center
+select_color_1 = "lightcoral"
+select_color_2 = "lightblue"
+
+style = ttk.Style()
+style.configure("Custom.TFrame", background=background_color)
 
 coef_img_size = 0.04
 
@@ -179,144 +205,155 @@ font_style_head = ("Arial", head_font_size, "bold")
 font_style_notebook = ('Helvetica', notebook_font_size)
 font_style_notebook_frame = ("Arial", notebook_frame_font_size)
 
-main_frame = ttk.Frame(root)
+main_frame = ttk.Frame(root, style="Custom.TFrame")
 main_frame.grid(row=0, column=0, sticky='nsew')
 root.grid_rowconfigure(0, weight=1)
 root.grid_columnconfigure(0, weight=1)
 
-left_frame = ttk.Frame(main_frame)
-left_frame.grid(row=0, column=0, sticky='ns')
+left_frame = ttk.Frame(main_frame, style="Custom.TFrame")
+left_frame.grid(row=0, column=0, sticky='ns', pady=(10,0))
 
-right_frame = ttk.Frame(main_frame)
-right_frame.grid(row=0, column=1, padx=10, sticky='nsew')
+right_frame = ttk.Frame(main_frame, style="Custom.TFrame")
+right_frame.grid(row=0, column=1, padx=10, sticky='nsew', pady=(10,0))
 
 #####################################
 
-tk.Label(left_frame, text="Входные параметры", font=font_style_head).grid(row=0, columnspan=4)
+tk.Label(left_frame, text="Входные параметры", bg=background_color, font=font_style_head).grid(row=0, columnspan=4)
 
-img_group = tk.PhotoImage(master=left_frame, file=path_img_group) # your image
-label = tk.Label(left_frame, image = img_group) # put the image on a label
+original_image = Image.open(path_img_group)
+resized_image = original_image.resize((img_size, img_size), Image.LANCZOS)
+img_group = ImageTk.PhotoImage(resized_image)
+label = tk.Label(left_frame, bg=background_color, image = img_group) # put the image on a label
 label.grid(row = 1, column = 0) # put the label in the grid
 
-tk.Label(left_frame, text="Число групп:", font=font_style).grid(row=1, column=1)
-entry_n = tk.Entry(left_frame, font=font_style, width=entry_width)
-entry_n.insert(0, "5")
+tk.Label(left_frame, text="Число подразделений:", bg=background_color, font=font_style).grid(row=1, column=1)
+entry_n = tk.Entry(left_frame, bg = entry_color, font=font_style, width=entry_width)
+entry_n.insert(0, "15")
 entry_n.grid(row=1, column=2)
 
-tk.Label(left_frame, text="не более 15", font=font_style).grid(row=1, column=3, sticky="w")
+tk.Label(left_frame, text="не более 15", bg=background_color, font=font_style).grid(row=1, column=3, sticky="w")
 
 original_image = Image.open(path_img_c_min)
 resized_image = original_image.resize((img_size, img_size), Image.LANCZOS)
 img_c_min = ImageTk.PhotoImage(resized_image)
-label = tk.Label(left_frame, image = img_c_min)
+label = tk.Label(left_frame, bg=background_color, image = img_c_min)
 label.image = img_c_min
 label.grid(row = 2, column = 0)
 
-tk.Label(left_frame, text="c_min:", font=font_style).grid(row=2, column=1)
-entry_c_min = tk.Entry(left_frame, font=font_style, width=entry_width)
+tk.Label(left_frame, text="Минимальная мощь:", bg=background_color, font=font_style).grid(row=2, column=1)
+entry_c_min = tk.Entry(left_frame, bg = entry_color, font=font_style, width=entry_width)
 entry_c_min.insert(0, "10")
 entry_c_min.grid(row=2, column=2)
 
-tk.Label(left_frame, text="не менее 0", font=font_style).grid(row=2, column=3, sticky="w")
+tk.Label(left_frame, text="не менее 0", bg=background_color, font=font_style).grid(row=2, column=3, sticky="w")
 
 original_image = Image.open(path_img_c_max)
 resized_image = original_image.resize((img_size, img_size), Image.LANCZOS)
 img_c_max = ImageTk.PhotoImage(resized_image)
-label = tk.Label(left_frame, image = img_c_max)
+label = tk.Label(left_frame, bg=background_color, image = img_c_max)
 label.image = img_c_max
 label.grid(row = 3, column = 0)
 
-tk.Label(left_frame, text="c_max:", font=font_style).grid(row=3, column=1)
-entry_c_max = tk.Entry(left_frame, font=font_style, width=entry_width)
+tk.Label(left_frame, text="Максимальная мощь:", bg=background_color, font=font_style).grid(row=3, column=1)
+entry_c_max = tk.Entry(left_frame, bg = entry_color, font=font_style, width=entry_width)
 entry_c_max.insert(0, "99")
 entry_c_max.grid(row=3, column=2)
 
-tk.Label(left_frame, text="не более 99999", font=font_style).grid(row=3, column=3, sticky="w")
+tk.Label(left_frame, text="не более 99999", bg=background_color, font=font_style).grid(row=3, column=3, sticky="w")
 
 original_image = Image.open(path_img_k)
 resized_image = original_image.resize((img_size, img_size), Image.LANCZOS)
 img_k = ImageTk.PhotoImage(resized_image)
-label = tk.Label(left_frame, image = img_k)
+label = tk.Label(left_frame, bg=background_color, image = img_k)
 label.image = img_k
 label.grid(row = 4, column = 0)
 
-tk.Label(left_frame, text="k:", font=font_style).grid(row=4, column=1)
-entry_k = tk.Entry(left_frame, font=font_style, width=entry_width)
+tk.Label(left_frame, text="Коеф. снижения мощи:", bg=background_color, font=font_style).grid(row=4, column=1)
+entry_k = tk.Entry(left_frame, bg = entry_color, font=font_style, width=entry_width)
 entry_k.insert(0, "1.50")
 entry_k.grid(row=4, column=2)
 
-tk.Label(left_frame, text="не менее 1.00", font=font_style).grid(row=4, column=3, sticky="w")
+tk.Label(left_frame, text="не менее 1.00", bg=background_color, font=font_style).grid(row=4, column=3, sticky="w")
 
 #####################################
 
-tk.Label(left_frame, text="Расстановка по строкам", font=font_style_head).grid(row=6, columnspan=4)
+tk.Label(left_frame, text="Расстановка по строкам", bg=background_color, font=font_style_head).grid(row=6, columnspan=4)
 
 entry_is_sort_matrix_y = tk.StringVar(value=0)
 
-r_sort_y_1 = tk.Radiobutton(left_frame, text="Без расстановки", variable=entry_is_sort_matrix_y, value=0, font=font_style)
+r_sort_y_1 = tk.Radiobutton(left_frame, text="Без расстановки", bg=background_color, variable=entry_is_sort_matrix_y, value=0, font=font_style)
 r_sort_y_1.grid(row=7, columnspan=4, sticky="w")
 
-r_sort_y_2 = tk.Radiobutton(left_frame, text="Возрастание по строкам", variable=entry_is_sort_matrix_y, value=1, font=font_style)
+r_sort_y_2 = tk.Radiobutton(left_frame, text="Возрастание по строкам", bg=background_color, variable=entry_is_sort_matrix_y, value=1, font=font_style)
 r_sort_y_2.grid(row=8, columnspan=4, sticky="w")
 
-r_sort_y_3 = tk.Radiobutton(left_frame, text="Убывание по строкам", variable=entry_is_sort_matrix_y, value=2, font=font_style)
+r_sort_y_3 = tk.Radiobutton(left_frame, text="Убывание по строкам", bg=background_color, variable=entry_is_sort_matrix_y, value=2, font=font_style)
 r_sort_y_3.grid(row=9, columnspan=4, sticky="w")
 
 #####################################
 
-tk.Label(left_frame, text="Расстановка по столбцам", font=font_style_head).grid(row=10, columnspan=4)
+tk.Label(left_frame, text="Расстановка по столбцам", bg=background_color, font=font_style_head).grid(row=10, columnspan=4)
 
 entry_is_sort_matrix_x = tk.StringVar(value=0)
 
-r_sort_x_1 = tk.Radiobutton(left_frame, text="Без расстановки", variable=entry_is_sort_matrix_x, value=0, font=font_style)
+r_sort_x_1 = tk.Radiobutton(left_frame, text="Без расстановки", bg=background_color, variable=entry_is_sort_matrix_x, value=0, font=font_style)
 r_sort_x_1.grid(row=11, columnspan=4, sticky="w")
 
-r_sort_x_2 = tk.Radiobutton(left_frame, text="Возрастание по столбцам", variable=entry_is_sort_matrix_x, value=1, font=font_style)
+r_sort_x_2 = tk.Radiobutton(left_frame, text="Возрастание по столбцам", bg=background_color, variable=entry_is_sort_matrix_x, value=1, font=font_style)
 r_sort_x_2.grid(row=12, columnspan=4, sticky="w")
 
-r_sort_x_3 = tk.Radiobutton(left_frame, text="Убывание по столбцам", variable=entry_is_sort_matrix_x, value=2, font=font_style)
+r_sort_x_3 = tk.Radiobutton(left_frame, text="Убывание по столбцам", bg=background_color, variable=entry_is_sort_matrix_x, value=2, font=font_style)
 r_sort_x_3.grid(row=13, columnspan=4, sticky="w")
 
 #####################################
 
-tk.Label(left_frame, text="Результат", font=font_style_head).grid(row=18, columnspan=4)
+tk.Label(left_frame, text="Результат", bg=background_color, font=font_style_head).grid(row=18, columnspan=4)
 
 original_image = Image.open(path_img_empty)
 resized_image = original_image.resize((img_size, img_size), Image.LANCZOS)
 my_image = ImageTk.PhotoImage(resized_image)
-label = tk.Label(left_frame, image = my_image)
+label = tk.Label(left_frame, bg=background_color, image = my_image)
 label.image = my_image
 label.grid(row = 19, column = 0)
 
-tk.Label(left_frame, text="Оптимальный", font=font_style).grid(row=19, column=1)
-sum_entry_veng_max = tk.Entry(left_frame, font=font_style, width=entry_width * 2)
+tk.Label(left_frame, text="Оптимальный", bg=background_color, font=font_style).grid(row=19, column=1)
+sum_entry_veng_max = tk.Entry(left_frame, bg = entry_color, font=font_style, width=entry_width * 2)
 sum_entry_veng_max.grid(row=19, column=2, columnspan=2)
 
-label = tk.Label(left_frame, image = my_image)
+label = tk.Label(left_frame, bg=background_color, image = my_image)
 label.image = my_image
 label.grid(row = 21, column = 0)
 
-tk.Label(left_frame, text="Наивный", font=font_style).grid(row=21, column=1)
-sum_entry_greedy_d = tk.Entry(left_frame, font=font_style, width=entry_width * 2)
+tk.Label(left_frame, text="Наивный", bg=background_color, font=font_style).grid(row=21, column=1)
+sum_entry_greedy_d = tk.Entry(left_frame, bg = entry_color, font=font_style, width=entry_width * 2)
 sum_entry_greedy_d.grid(row=21, column=2, columnspan=2)
 
-button_generate = tk.Button(left_frame, text="Сгенерировать", font=font_style, bg="lightgreen", command=generate_matrix_and_vector)
-button_generate.grid(row=22, columnspan=4, pady=10)
+label = tk.Label(left_frame, bg=background_color, image = my_image)
+label.image = my_image
+label.grid(row = 22, column = 0)
+
+tk.Label(left_frame, text="Погрешность", bg=background_color, font=font_style).grid(row=22, column=1)
+error = tk.Entry(left_frame, bg = entry_color, font=font_style, width=entry_width * 2)
+error.grid(row=22, column=2, columnspan=2)
+
+button_generate = tk.Button(left_frame, text="Сгенерировать", font=font_style, bg=button_color, command=generate_matrix_and_vector)
+button_generate.grid(row=23, columnspan=4, pady=10)
 
 #####################################
 
 style = ttk.Style()
-style.configure("TNotebook.Tab", padding=[20, 10], font=font_style_notebook)
+style.configure("TNotebook")
+style.configure("TNotebook.Tab", padding=[20, 10], font=font_style_notebook, background=background_color, foreground="black")
 
 notebook = ttk.Notebook(right_frame)
 notebook.grid(row=3, column=2, sticky='nsew')
 
-frame_c_and_x = ttk.Frame(notebook)
-frame_veng_max = ttk.Frame(notebook)
-frame_greedy_d = ttk.Frame(notebook)
+frame_c_and_x = ttk.Frame(notebook, style="Custom.TFrame")
+frame_veng_max = ttk.Frame(notebook, style="Custom.TFrame")
+frame_greedy_d = ttk.Frame(notebook, style="Custom.TFrame")
 
 notebook.add(frame_c_and_x, text="Матрица C")
-notebook.add(frame_veng_max, text="Оптимальные")
+notebook.add(frame_veng_max, text="Оптимальный")
 notebook.add(frame_greedy_d, text="Наивный")
 
 matrix = np.zeros((int(entry_n.get()),int(entry_n.get())))
