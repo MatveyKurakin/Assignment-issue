@@ -17,7 +17,7 @@ def generate_matrix_and_vector(new_c=None):
     is_sort_matrix_x = entry_is_sort_matrix_x.get()
 
     # Проверка на корректность диапазонов
-    if c_min >= c_max or k <= 1.0 or N < 1 or N > 15 or k < 0 or c_min < 0:
+    if c_min >= c_max or k < 1.0 or N < 1 or N > 15 or k < 0 or c_min < 0:
         sum_entry_veng_max.delete(0, tk.END)
         sum_entry_veng_max.insert(0, "ERROR")
 
@@ -164,12 +164,32 @@ def example_matrix_3():
     entry_c_max.delete(0, tk.END)
     entry_c_max.insert(0, "5")
 
-    entry_k.delete(0, tk.END)
-    entry_k.insert(0, "5.0")
+    #entry_k.delete(0, tk.END)
+    #entry_k.insert(0, "5.0")
 
     c = np.array([[5, 4, 2],
                   [4, 5, 4],
                   [2, 4, 5]])
+    generate_matrix_and_vector(c)
+
+def example_matrix_5():
+    entry_n.delete(0, tk.END)
+    entry_n.insert(0, "5")
+
+    entry_c_min.delete(0, tk.END)
+    entry_c_min.insert(0, "2")
+
+    entry_c_max.delete(0, tk.END)
+    entry_c_max.insert(0, "10")
+
+    #entry_k.delete(0, tk.END)
+    #entry_k.insert(0, "5.0")
+
+    c = np.array([[1, 2, 3, 8, 10],
+                  [2, 3, 8, 10, 8],
+                  [3, 8, 10, 8, 3],
+                  [8, 10, 8, 3, 2],
+                  [10, 8, 3, 2, 1]])
     generate_matrix_and_vector(c)
 
 def on_close():
@@ -346,7 +366,10 @@ r_sort_x_3.grid(row=13, columnspan=5, sticky="w")
 tk.Label(left_frame, text="Проверка работы", bg=background_color, font=font_style_head).grid(row=18, columnspan=5)
 
 button_generate = tk.Button(left_frame, text="Матрица 3x3", font=font_style, bg=button_color, command=example_matrix_3)
-button_generate.grid(row=19, columnspan=5, pady=10)
+button_generate.grid(row=19, column=2, columnspan=1, pady=10)
+
+button_generate = tk.Button(left_frame, text="Матрица 5x5", font=font_style, bg=button_color, command=example_matrix_5)
+button_generate.grid(row=19, column=3, columnspan=1, pady=10)
 
 #####################################
 
@@ -363,25 +386,25 @@ tk.Label(left_frame, text="S_max", bg=background_color, font=font_style).grid(ro
 tk.Label(left_frame, text="S", bg=background_color, font=font_style).grid(row=21, column=3)
 tk.Label(left_frame, text="Время", bg=background_color, font=font_style).grid(row=21, column=4)
 
-tk.Label(left_frame, text="Оптимальный", bg=background_color, font=font_style).grid(row=22, column=0, columnspan=2, sticky="w")
-sum_entry_veng_max = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
-sum_entry_veng_max.grid(row=22, column=2)
-sum_entry_veng_max_res = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
-sum_entry_veng_max_res.grid(row=22, column=3)
-sum_entry_veng_max_time = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
-sum_entry_veng_max_time.grid(row=22, column=4)
+tk.Label(left_frame, text="σ* и σ₀", bg=background_color, font=font_style).grid(row=22, column=0, columnspan=2, sticky="w")
+sum_entry_greedy_d = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
+sum_entry_greedy_d.grid(row=22, column=2)
+sum_entry_greedy_d_res = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
+sum_entry_greedy_d_res.grid(row=22, column=3)
+sum_entry_greedy_d_time = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
+sum_entry_greedy_d_time.grid(row=22, column=4)
 
 '''label = tk.Label(left_frame, bg=background_color, image = my_image)
 label.image = my_image
 label.grid(row = 21, column = 0)'''
 
-tk.Label(left_frame, text="Наивный", bg=background_color, font=font_style).grid(row=23, column=0, columnspan=2, sticky="w")
-sum_entry_greedy_d = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
-sum_entry_greedy_d.grid(row=23, column=2)
-sum_entry_greedy_d_res = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
-sum_entry_greedy_d_res.grid(row=23, column=3)
-sum_entry_greedy_d_time = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
-sum_entry_greedy_d_time.grid(row=23, column=4)
+tk.Label(left_frame, text="σ₁ и σ₂", bg=background_color, font=font_style).grid(row=23, column=0, columnspan=2, sticky="w")
+sum_entry_veng_max = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
+sum_entry_veng_max.grid(row=23, column=2)
+sum_entry_veng_max_res = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
+sum_entry_veng_max_res.grid(row=23, column=3)
+sum_entry_veng_max_time = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
+sum_entry_veng_max_time.grid(row=23, column=4)
 
 '''label = tk.Label(left_frame, bg=background_color, image = my_image)
 label.image = my_image
@@ -410,8 +433,8 @@ frame_veng_max = ttk.Frame(notebook, style="Custom.TFrame")
 frame_greedy_d = ttk.Frame(notebook, style="Custom.TFrame")
 
 notebook.add(frame_c_and_x, text="Матрица C")
-notebook.add(frame_veng_max, text="Оптимальный")
-notebook.add(frame_greedy_d, text="Наивный")
+notebook.add(frame_greedy_d, text="σ* и σ₀")
+notebook.add(frame_veng_max, text="σ₁ и σ₂")
 
 matrix = np.zeros((int(entry_n.get()),int(entry_n.get())))
 show_c(matrix)
