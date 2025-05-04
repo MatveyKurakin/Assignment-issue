@@ -174,7 +174,7 @@ class Window:
 
         tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=5, column=3, sticky="w")
 
-        ### d_min
+        '''### d_min
 
         self.original_image = Image.open(self.path_img_d_min)
         self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
@@ -238,7 +238,7 @@ class Window:
 
         tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=9,
                                                                                                               column=3,
-                                                                                                              sticky="w")
+                                                                                                              sticky="w")'''
         # TODO: lambda is vector, need new frame in notebook or in frame_c_matrix
         #####################################
 
@@ -329,21 +329,25 @@ class Window:
 
         self.frame_c = ttk.Frame(self.notebook, style="Custom.TFrame")
         self.frame_d = [ttk.Frame(self.notebook, style="Custom.TFrame")]
+        self.frame_lambda = ttk.Frame(self.notebook, style="Custom.TFrame")
         self.frame_res = ttk.Frame(self.notebook, style="Custom.TFrame")
 
         self.notebook.add(self.frame_c, text="Матрица C")
         self.notebook.add(self.frame_d[0], text="D1")
+        self.notebook.add(self.frame_lambda, text="lambda")
         self.notebook.add(self.frame_res, text="Res")
 
         self.c_matrix = [[]]
         self.d_matrix = [[[]]]
         self.b = []
+        self.l = []
 
         matrix = np.zeros((int(self.entry_n.get()), int(self.entry_n.get())))
         matrix_d = np.zeros((int(self.entry_k.get()), int(self.entry_n.get()), int(self.entry_n.get())))
         vector = np.ones(int(self.entry_k.get()))
         self.create_c_matrix(matrix, self.frame_c)
         self.create_d_matrix(matrix_d, vector, self.frame_d)
+        self.create_lambda(vector, self.frame_lambda)
 
         # self.show_matrix_on_frame(matrix, matrix, self.frame_veng_max)
         self.show_matrix_on_frame(matrix, matrix, self.frame_res)
@@ -365,36 +369,38 @@ class Window:
 
         for tab_id in self.notebook.tabs():
             tab_text = self.notebook.tab(tab_id, "text")
-            if tab_text.startswith('D') or tab_text == 'Res':
+            if tab_text.startswith('D') or tab_text == 'Res' or tab_text == 'lambda':
                 tab_widget = self.notebook.nametowidget(tab_id)
                 self.notebook.forget(tab_id)
                 tab_widget.destroy()
 
         self.frame_d = []
+        self.frame_lambda = ttk.Frame(self.notebook, style="Custom.TFrame")
         self.frame_res = ttk.Frame(self.notebook, style="Custom.TFrame")
 
         for i in range(int(self.entry_k.get())):
             self.frame_d.append(ttk.Frame(self.notebook, style="Custom.TFrame"))
         for i in range(int(self.entry_k.get())):
             self.notebook.add(self.frame_d[i], text=f"D{i+1}")
+        self.notebook.add(self.frame_lambda, text="lambda")
         self.notebook.add(self.frame_res, text="Res")
 
         self.create_d_matrix(matrix_d, vector, self.frame_d)
+        self.create_lambda(vector, self.frame_lambda)
         self.show_matrix_on_frame(matrix, matrix, self.frame_res)
-
 
     def create_c_matrix(self, matrix, frame):
         self.c_matrix = [[0 for _ in range(matrix.shape[0])] for _ in range(matrix.shape[0])]
         for widget in frame.winfo_children():
             widget.destroy()
 
-        label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=int(self.matrix_width * matrix.shape[0]*1.06), height=self.matrix_height, borderwidth=1,
-                         relief="solid")
-        label.grid(row=0, column=1, columnspan=matrix.shape[1])
+        # label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=int(self.matrix_width * matrix.shape[0]*1.06), height=self.matrix_height, borderwidth=1,
+        #                  relief="solid")
+        # label.grid(row=0, column=1, columnspan=matrix.shape[1])
 
-        label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
-                         relief="solid")
-        label.grid(row=0, column=0, rowspan=2)
+        # label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
+        #                  relief="solid")
+        # label.grid(row=0, column=0, rowspan=2)
 
         for i in range(len(matrix)):
             label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=self.matrix_width, height=self.matrix_height,
@@ -402,7 +408,12 @@ class Window:
             label.grid(row=1, column=i + 1)
 
         for i in range(len(matrix)):
-            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+            # label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+            #                  borderwidth=1,
+            #                  relief="solid")
+            # label.grid(row=i + 2, column=0)
+            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2,
+                             width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1,
                              relief="solid")
             label.grid(row=i + 2, column=0)
@@ -420,13 +431,13 @@ class Window:
             for widget in frame[l].winfo_children():
                 widget.destroy()
 
-            label = tk.Label(frame[l], text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=int(self.matrix_width * matrix.shape[1]*1.06), height=self.matrix_height, borderwidth=1,
-                             relief="solid")
-            label.grid(row=0, column=1, columnspan=matrix.shape[1])
+            # label = tk.Label(frame[l], text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=int(self.matrix_width * matrix.shape[1]*1.06), height=self.matrix_height, borderwidth=1,
+            #                  relief="solid")
+            # label.grid(row=0, column=1, columnspan=matrix.shape[1])
 
-            label = tk.Label(frame[l], text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
-                             relief="solid")
-            label.grid(row=0, column=0, rowspan=2)
+            # label = tk.Label(frame[l], text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
+            #                  relief="solid")
+            # label.grid(row=0, column=0, rowspan=2)
 
             label = tk.Label(frame[l], text="b", font=self.font_style_notebook_frame,
                              bg=self.matrix_color_4, width=self.matrix_width, height=self.matrix_height,
@@ -440,7 +451,12 @@ class Window:
                 label.grid(row=1, column=i + 1)
 
             for i in range(matrix.shape[1]):
-                label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+                # label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+                #                  borderwidth=1,
+                #                  relief="solid")
+                # label.grid(row=i + 2, column=0)
+                label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2,
+                                 width=self.matrix_width, height=self.matrix_height,
                                  borderwidth=1,
                                  relief="solid")
                 label.grid(row=i + 2, column=0)
@@ -457,6 +473,30 @@ class Window:
                                               relief="solid")
             self.b[l].insert(0, int(vector[l]))
             self.b[l].grid(row=2, column=matrix.shape[1]+2, ipady=11)
+
+    def create_lambda(self, vector, frame):
+        self.l = [1 for _ in range(vector.shape[0])]
+        for widget in frame.winfo_children():
+            widget.destroy()
+
+        label = tk.Label(frame, text="lambda", font=self.font_style_notebook_frame, bg=self.matrix_color_1,
+                         width=self.matrix_width, height=self.matrix_height,
+                         borderwidth=1,
+                         relief="solid")
+        label.grid(row=0, column=1)
+
+        for i in range(vector.shape[0]):
+            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2,
+                             width=self.matrix_width, height=self.matrix_height,
+                             borderwidth=1,
+                             relief="solid")
+            label.grid(row=i + 1, column=0)
+            self.l[i] = tk.Entry(frame, font=self.font_style_notebook_frame,
+                                              bg=self.matrix_color_3, width=self.matrix_width,
+                                              borderwidth=1,
+                                              relief="solid")
+            self.l[i].insert(0, int(vector[i]))
+            self.l[i].grid(row=i + 1, column=1, ipady=11)  # Сдвигаем на 1 вниз для числа
 
     def get_c_matrix(self):
         c = np.zeros((len(self.c_matrix),len(self.c_matrix)))
@@ -479,102 +519,17 @@ class Window:
             b[i] = int(self.b[i].get())
         return b
 
-    def generate_matrix(self):
-        N = int(self.entry_n.get())
-        k = int(self.entry_k.get())
-        c_min = int(self.entry_c_min.get())
-        c_max = int(self.entry_c_max.get()) + 1
-        d_min = int(self.entry_d_min.get())
-        d_max = int(self.entry_d_max.get()) + 1
-        b_max = int(self.entry_b_max.get()) + 1
-        is_sort_matrix_y = self.entry_is_sort_matrix_y.get()
-        is_sort_matrix_x = self.entry_is_sort_matrix_x.get()
-
-        if c_min >= c_max or N < 1 or N > 15 or c_min < 0:
-            self.sum_entry_veng_max.delete(0, tk.END)
-            self.sum_entry_veng_max.insert(0, "ERROR")
-
-            self.sum_entry_greedy_d.delete(0, tk.END)
-            self.sum_entry_greedy_d.insert(0, "ERROR")
-            raise ValueError("Минимальное значение должно быть меньше максимального.")
-
-        c = create_c(N, c_min, c_max)
-        d = create_d(N, k, d_min, d_max)
-        b = create_b(k, b_max)
-
-        if (is_sort_matrix_y == "1"):
-            c = increase_by_row(c)
-        if (is_sort_matrix_y == "2"):
-            c = de_increase_by_row(c)
-
-        if (is_sort_matrix_x == "1"):
-            c = increase_by_col(c)
-        if (is_sort_matrix_x == "2"):
-            c = de_increase_by_col(c)
-
-        self.create_c_matrix(c, self.frame_c)
-        self.create_d_matrix(d, b, self.frame_d)
-
-        res = np.zeros((int(self.entry_n.get()), int(self.entry_n.get())))
-        self.show_matrix_on_frame(c, res, self.frame_res)
-
-    def calculate_matrix(self):
-
-        n = int(self.entry_n.get())
-        k = int(self.entry_k.get())
-        n_max = int(self.entry_n_max.get())
-        c = self.get_c_matrix()
-        d = self.get_d_matrix()
-        b = self.get_b()
-        l = np.array([int(self.entry_lambda.get())]*k)
-
-        res = main(n, k, n_max, c, d, b, l)
-
-        #self.sum_entry_veng_max.delete(0, tk.END)
-        #self.sum_entry_veng_max.insert(0, str(f"{round(total_optimal_max, 2)} ({round(time_optimal, 2)} сек.)"))
-
-        self.show_matrix_on_frame(c, res, self.frame_res)
-
-    def show_c(self, matrix, frame):
-        for widget in frame.winfo_children():
-            widget.destroy()
-
-        label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=int(self.matrix_width * matrix.shape[0]*1.06), height=self.matrix_height, borderwidth=1,
-                         relief="solid")
-        label.grid(row=0, column=1, columnspan=matrix.shape[1])
-
-        label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
-                         relief="solid")
-        label.grid(row=0, column=0, rowspan=2)
-
-        for i in range(len(matrix)):
-            label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=self.matrix_width, height=self.matrix_height,
-                             borderwidth=1, relief="solid")
-            label.grid(row=1, column=i + 1)
-
-        for i in range(len(matrix)):
-            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
-                             borderwidth=1,
-                             relief="solid")
-            label.grid(row=i + 2, column=0)
-            for j in range(len(matrix[i])):
-                label = tk.Label(frame, text=int(matrix[i][j]), font=self.font_style_notebook_frame, bg=self.matrix_color_3, width=self.matrix_width, height=self.matrix_height,
-                                 borderwidth=1,
-                                 relief="solid")
-                label.grid(row=i + 2, column=j + 1)  # Сдвигаем на 1 вниз для числа
-
-
     def show_matrix_on_frame(self, matrix, res, frame):
         for widget in frame.winfo_children():
             widget.destroy()
-        label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1,
-                         width=int(self.matrix_width * matrix.shape[0] * 1.06), height=self.matrix_height, borderwidth=1,
-                         relief="solid")
-        label.grid(row=0, column=1, columnspan=matrix.shape[1])
+        # label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1,
+        #                  width=int(self.matrix_width * matrix.shape[0] * 1.06), height=self.matrix_height, borderwidth=1,
+        #                  relief="solid")
+        # label.grid(row=0, column=1, columnspan=matrix.shape[1])
 
-        label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
-                         relief="solid")
-        label.grid(row=0, column=0, rowspan=2)
+        # label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
+        #                  relief="solid")
+        # label.grid(row=0, column=0, rowspan=2)
 
         for i in range(len(matrix)):
             label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=self.matrix_width, height=self.matrix_height,
@@ -582,7 +537,12 @@ class Window:
             label.grid(row=1, column=i + 1)
 
         for i in range(len(matrix)):
-            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+            # label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+            #                  borderwidth=1,
+            #                  relief="solid")
+            # label.grid(row=i + 2, column=0)
+            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2,
+                             width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1,
                              relief="solid")
             label.grid(row=i + 2, column=0)
@@ -596,6 +556,63 @@ class Window:
                                  borderwidth=1,
                                  relief="solid")
                 label.grid(row=i + 2, column=j + 1)
+
+    def generate_matrix(self):
+        N = int(self.entry_n.get())
+        # k = int(self.entry_k.get())
+        c_min = int(self.entry_c_min.get())
+        c_max = int(self.entry_c_max.get()) + 1
+        # d_min = int(self.entry_d_min.get())
+        # d_max = int(self.entry_d_max.get()) + 1
+        # b_max = int(self.entry_b_max.get()) + 1
+        is_sort_matrix_y = self.entry_is_sort_matrix_y.get()
+        is_sort_matrix_x = self.entry_is_sort_matrix_x.get()
+
+        if c_min >= c_max or N < 1 or N > 15 or c_min < 0:
+            self.sum_entry_veng_max.delete(0, tk.END)
+            self.sum_entry_veng_max.insert(0, "ERROR")
+
+            self.sum_entry_greedy_d.delete(0, tk.END)
+            self.sum_entry_greedy_d.insert(0, "ERROR")
+            raise ValueError("Минимальное значение должно быть меньше максимального.")
+
+        c = create_c(N, c_min, c_max)
+        # d = self.get_d_matrix()
+        # b = self.get_b()
+
+        if (is_sort_matrix_y == "1"):
+            c = increase_by_row(c)
+        if (is_sort_matrix_y == "2"):
+            c = de_increase_by_row(c)
+
+        if (is_sort_matrix_x == "1"):
+            c = increase_by_col(c)
+        if (is_sort_matrix_x == "2"):
+            c = de_increase_by_col(c)
+
+        self.create_c_matrix(c, self.frame_c)
+        # self.create_d_matrix(d, b, self.frame_d)
+
+        res = np.zeros((int(self.entry_n.get()), int(self.entry_n.get())))
+        self.show_matrix_on_frame(c, res, self.frame_res)
+
+    def calculate_matrix(self):
+
+        n = int(self.entry_n.get())
+        k = int(self.entry_k.get())
+        n_max = int(self.entry_n_max.get())
+        c = self.get_c_matrix()
+        d = self.get_d_matrix()
+        b = self.get_b()
+        l = np.array([1]*k)
+
+        res = main(n, k, n_max, c, d, b, l)
+
+        #self.sum_entry_veng_max.delete(0, tk.END)
+        #self.sum_entry_veng_max.insert(0, str(f"{round(total_optimal_max, 2)} ({round(time_optimal, 2)} сек.)"))
+
+        self.show_matrix_on_frame(c, res, self.frame_res)
+
     def on_close(self):
         self.root.destroy()
         sys.exit()
