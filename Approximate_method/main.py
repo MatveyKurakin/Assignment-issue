@@ -239,7 +239,6 @@ class Window:
         tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=9,
                                                                                                               column=3,
                                                                                                               sticky="w")'''
-        # TODO: lambda is vector, need new frame in notebook or in frame_c_matrix
         #####################################
 
         tk.Label(self.left_frame, text="Расстановка по строкам", bg=self.background_color, font=self.font_style_head).grid(row=10,
