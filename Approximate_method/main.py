@@ -15,7 +15,7 @@ class Window:
 
         # Создание основного окна
         self.root = tk.Tk()
-        self.root.title("Огневая мощь противника")
+        self.root.title("Приближенный метод")
 
         self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
