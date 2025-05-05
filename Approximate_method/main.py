@@ -530,6 +530,12 @@ class Window:
             b[i] = int(self.b[i].get())
         return b
 
+    def get_l(self):
+        l = np.zeros(len(self.d_matrix))
+        for i in range(len(self.d_matrix)):
+            l[i] = int(self.l[i].get())
+        return l
+
     def show_matrix_on_frame(self, matrix, res, frame):
         for widget in frame.winfo_children():
             widget.destroy()
@@ -616,7 +622,7 @@ class Window:
         c = self.get_c_matrix()
         d = self.get_d_matrix()
         b = self.get_b()
-        l = np.array([1]*k)
+        l = self.get_l()
 
         sum, res = main(n, k, n_max, c, d, b, l)
 
