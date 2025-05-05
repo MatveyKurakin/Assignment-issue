@@ -32,14 +32,14 @@ class Window:
         self.path_img_lambda = os.path.join(base_path, 'images', 'empty.png')
         self.path_img_empty = os.path.join(base_path, 'images', 'empty.png')
 
-        self.background_color = "#7BA05B"
-        self.entry_color = "#B8D8B0"
-        self.button_color = "#B0524A"
-        self.matrix_color_1 = "#918151"  # left
-        self.matrix_color_2 = "#4F7942"  # up
-        self.matrix_color_3 = "#f8f8d9"  # center
-        self.matrix_color_4 = "lightcoral"  # b
-        self.select_color_1 = "lightcoral"
+        self.background_color = "#E3F2FD" # "#F0F0F0"
+        self.entry_color = "#F5F9FF" # "#FFFFFF"
+        self.button_color = "#5ba5fa" # "#5D6D7E"
+        self.matrix_color_up = "#d9dadb"
+        self.matrix_color_left = "#e1e3e6"
+        self.matrix_color_cell = "#FDF6E3"
+        self.matrix_color_param = "#4A6B8A"
+        self.select_color_1 = "#E74C3C"
         self.select_color_2 = "lightblue"
 
         self.style = ttk.Style()
@@ -48,6 +48,8 @@ class Window:
         self.coef_img_size = 0.04
 
         self.img_size = round(self.coef_img_size * self.root.winfo_screenheight())
+        self.ing_width = 1
+        self.img_height = round(self.coef_img_size * self.root.winfo_screenheight())
 
         #####################################
 
@@ -95,14 +97,14 @@ class Window:
                                                                                                        columnspan=4)
 
         self.original_image = Image.open(self.path_img_n)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_n = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_n)  # put the image on a label
         self.label.grid(row=1, column=0)  # put the label in the grid
 
         tk.Label(self.left_frame, text="n:", bg=self.background_color, font=self.font_style).grid(row=1, column=1)
         self.entry_n = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_n.insert(0, "5")
+        self.entry_n.insert(0, "15")
         self.entry_n.grid(row=1, column=2)
         self.entry_n.bind("<KeyRelease>", self.change_entry)
 
@@ -111,7 +113,7 @@ class Window:
         ### k
 
         self.original_image = Image.open(self.path_img_k)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_k = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color,
                               image=self.img_k)  # put the image on a label
@@ -123,29 +125,29 @@ class Window:
         self.entry_k.grid(row=2, column=2)
         self.entry_k.bind("<KeyRelease>", self.change_entry)
 
-        tk.Label(self.left_frame, text="не более 5", bg=self.background_color, font=self.font_style).grid(row=2, column=3, sticky="w")
+        tk.Label(self.left_frame, text="не более 10", bg=self.background_color, font=self.font_style).grid(row=2, column=3, sticky="w")
 
         ### n_max
 
         self.original_image = Image.open(self.path_img_n_max)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_n_max = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color,
                               image=self.img_n_max)  # put the image on a label
         self.label.grid(row=3, column=0)  # put the label in the grid
 
-        tk.Label(self.left_frame, text="n_max:", bg=self.background_color, font=self.font_style).grid(row=3, column=1)
+        tk.Label(self.left_frame, text="N_max:", bg=self.background_color, font=self.font_style).grid(row=3, column=1)
         self.entry_n_max = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
         self.entry_n_max.insert(0, "10")
         self.entry_n_max.grid(row=3, column=2)
-        self.entry_n_max.bind("<KeyRelease>")
+        self.entry_n_max.bind("<KeyRelease>", self.check_n_max)
 
-        tk.Label(self.left_frame, text="не более 100", bg=self.background_color, font=self.font_style).grid(row=3, column=3, sticky="w")
+        tk.Label(self.left_frame, text="не более 100000", bg=self.background_color, font=self.font_style).grid(row=3, column=3, sticky="w")
 
         ### c_min
 
         self.original_image = Image.open(self.path_img_c_min)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_c_min = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_c_min)
         self.label.image = self.img_c_min
@@ -153,7 +155,7 @@ class Window:
 
         tk.Label(self.left_frame, text="c_min:", bg=self.background_color, font=self.font_style).grid(row=4, column=1)
         self.entry_c_min = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_c_min.insert(0, "1")
+        self.entry_c_min.insert(0, "100")
         self.entry_c_min.grid(row=4, column=2)
 
         tk.Label(self.left_frame, text="не менее 0", bg=self.background_color, font=self.font_style).grid(row=4, column=3, sticky="w")
@@ -161,7 +163,7 @@ class Window:
         ### c_max
 
         self.original_image = Image.open(self.path_img_c_max)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_c_max = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_c_max)
         self.label.image = self.img_c_max
@@ -169,7 +171,7 @@ class Window:
 
         tk.Label(self.left_frame, text="c_max:", bg=self.background_color, font=self.font_style).grid(row=5, column=1)
         self.entry_c_max = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_c_max.insert(0, "5")
+        self.entry_c_max.insert(0, "999")
         self.entry_c_max.grid(row=5, column=2)
 
         tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=5, column=3, sticky="w")
@@ -177,7 +179,7 @@ class Window:
         '''### d_min
 
         self.original_image = Image.open(self.path_img_d_min)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_d_min = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_d_min)
         self.label.image = self.img_d_min
@@ -193,7 +195,7 @@ class Window:
         ### d_max
 
         self.original_image = Image.open(self.path_img_d_max)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_d_max = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_d_max)
         self.label.image = self.img_d_max
@@ -209,7 +211,7 @@ class Window:
         ### b_max
 
         self.original_image = Image.open(self.path_img_b_max)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_b_max = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_b_max)
         self.label.image = self.img_b_max
@@ -225,7 +227,7 @@ class Window:
         ### lambda
 
         self.original_image = Image.open(self.path_img_lambda)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_lambda = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_lambda)
         self.label.image = self.img_lambda
@@ -279,20 +281,25 @@ class Window:
 
         #####################################
 
-        '''tk.Label(self.left_frame, text="Результат", bg=self.background_color, font=self.font_style_head).grid(row=18, columnspan=4)
+        self.button_generate = tk.Button(self.left_frame, text="Сгенерировать", font=self.font_style,
+                                         bg=self.button_color,
+                                         command=self.generate_matrix)
+        self.button_generate.grid(row=18, column=0, columnspan=4, pady=10)
+
+        tk.Label(self.left_frame, text="Результат", bg=self.background_color, font=self.font_style_head).grid(row=19, columnspan=4)
 
         self.original_image = Image.open(self.path_img_empty)
-        self.resized_image = self.original_image.resize((self.img_size, self.img_size), Image.LANCZOS)
+        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.my_image = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.my_image)
         self.label.image = self.my_image
-        self.label.grid(row=19, column=0)
+        self.label.grid(row=20, column=0)
 
-        tk.Label(self.left_frame, text="Оптимальный", bg=self.background_color, font=self.font_style).grid(row=19, column=1)
-        self.sum_entry_veng_max = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width * 2)
-        self.sum_entry_veng_max.grid(row=19, column=2, columnspan=2)
+        tk.Label(self.left_frame, text="Сумма", bg=self.background_color, font=self.font_style).grid(row=20, column=1)
+        self.sum_entry = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width*2))
+        self.sum_entry.grid(row=20, column=2, columnspan=2)
 
-        label = tk.Label(self.left_frame, bg=self.background_color, image=self.my_image)
+        '''label = tk.Label(self.left_frame, bg=self.background_color, image=self.my_image)
         label.image = self.my_image
         label.grid(row=21, column=0)
 
@@ -308,13 +315,9 @@ class Window:
         self.error = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width * 2)
         self.error.grid(row=22, column=2, columnspan=2)'''
 
-        self.button_generate = tk.Button(self.left_frame, text="Сгенерировать", font=self.font_style, bg=self.button_color,
-                                    command=self.generate_matrix)
-        self.button_generate.grid(row=23, column=0, columnspan=2, pady=10)
-
         self.button_generate = tk.Button(self.left_frame, text="Расчитать", font=self.font_style, bg=self.button_color,
                                     command=self.calculate_matrix)
-        self.button_generate.grid(row=23, column=2, columnspan=2, pady=10)
+        self.button_generate.grid(row=21, column=0, columnspan=4, pady=10)
 
         #####################################
 
@@ -333,8 +336,8 @@ class Window:
 
         self.notebook.add(self.frame_c, text="Матрица C")
         self.notebook.add(self.frame_d[0], text="D1")
-        self.notebook.add(self.frame_lambda, text="lambda")
-        self.notebook.add(self.frame_res, text="Res")
+        self.notebook.add(self.frame_lambda, text="λ")
+        self.notebook.add(self.frame_res, text="X")
 
         self.c_matrix = [[]]
         self.d_matrix = [[[]]]
@@ -356,6 +359,15 @@ class Window:
         self.root.destroy()
 
     def change_entry(self, event):
+        n = int(self.entry_n.get())
+        k = int(self.entry_k.get())
+        n_max = int(self.entry_n_max.get())
+        c_min = int(self.entry_c_min.get())
+        c_max = int(self.entry_c_max.get()) + 1
+
+        if not self.validate_entry(n, k, n_max, c_min, c_max):
+            return
+
         self.c_matrix = [[]]
         self.d_matrix = [[[]]]
         self.b = []
@@ -368,7 +380,7 @@ class Window:
 
         for tab_id in self.notebook.tabs():
             tab_text = self.notebook.tab(tab_id, "text")
-            if tab_text.startswith('D') or tab_text == 'Res' or tab_text == 'lambda':
+            if tab_text.startswith('D') or tab_text == 'X' or tab_text == 'λ':
                 tab_widget = self.notebook.nametowidget(tab_id)
                 self.notebook.forget(tab_id)
                 tab_widget.destroy()
@@ -381,8 +393,8 @@ class Window:
             self.frame_d.append(ttk.Frame(self.notebook, style="Custom.TFrame"))
         for i in range(int(self.entry_k.get())):
             self.notebook.add(self.frame_d[i], text=f"D{i+1}")
-        self.notebook.add(self.frame_lambda, text="lambda")
-        self.notebook.add(self.frame_res, text="Res")
+        self.notebook.add(self.frame_lambda, text="λ")
+        self.notebook.add(self.frame_res, text="X")
 
         self.create_d_matrix(matrix_d, vector, self.frame_d)
         self.create_lambda(vector, self.frame_lambda)
@@ -393,31 +405,31 @@ class Window:
         for widget in frame.winfo_children():
             widget.destroy()
 
-        # label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=int(self.matrix_width * matrix.shape[0]*1.06), height=self.matrix_height, borderwidth=1,
+        # label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=int(self.matrix_width * matrix.shape[0]*1.06), height=self.matrix_height, borderwidth=1,
         #                  relief="solid")
         # label.grid(row=0, column=1, columnspan=matrix.shape[1])
 
-        # label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
+        # label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
         #                  relief="solid")
         # label.grid(row=0, column=0, rowspan=2)
 
         for i in range(len(matrix)):
-            label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=self.matrix_width, height=self.matrix_height,
+            label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1, relief="solid")
             label.grid(row=1, column=i + 1)
 
         for i in range(len(matrix)):
-            # label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+            # label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height,
             #                  borderwidth=1,
             #                  relief="solid")
             # label.grid(row=i + 2, column=0)
-            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2,
+            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left,
                              width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1,
                              relief="solid")
             label.grid(row=i + 2, column=0)
             for j in range(len(matrix[i])):
-                self.c_matrix[i][j] = tk.Entry(frame, font=self.font_style_notebook_frame, bg=self.matrix_color_3, width=self.matrix_width,
+                self.c_matrix[i][j] = tk.Entry(frame, font=self.font_style_notebook_frame, bg=self.matrix_color_cell, width=self.matrix_width,
                                  borderwidth=1,
                                  relief="solid")
                 self.c_matrix[i][j].insert(0, int(matrix[i][j]))
@@ -430,43 +442,43 @@ class Window:
             for widget in frame[l].winfo_children():
                 widget.destroy()
 
-            # label = tk.Label(frame[l], text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=int(self.matrix_width * matrix.shape[1]*1.06), height=self.matrix_height, borderwidth=1,
+            # label = tk.Label(frame[l], text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=int(self.matrix_width * matrix.shape[1]*1.06), height=self.matrix_height, borderwidth=1,
             #                  relief="solid")
             # label.grid(row=0, column=1, columnspan=matrix.shape[1])
 
-            # label = tk.Label(frame[l], text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
+            # label = tk.Label(frame[l], text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
             #                  relief="solid")
             # label.grid(row=0, column=0, rowspan=2)
 
             label = tk.Label(frame[l], text="b", font=self.font_style_notebook_frame,
-                             bg=self.matrix_color_4, width=self.matrix_width, height=self.matrix_height,
+                             bg=self.matrix_color_param, width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1,
                              relief="solid")
             label.grid(row=1, column=matrix.shape[1]+2, padx=10)
 
             for i in range(matrix.shape[1]):
-                label = tk.Label(frame[l], text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=self.matrix_width, height=self.matrix_height,
+                label = tk.Label(frame[l], text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=self.matrix_width, height=self.matrix_height,
                                  borderwidth=1, relief="solid")
                 label.grid(row=1, column=i + 1)
 
             for i in range(matrix.shape[1]):
-                # label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+                # label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height,
                 #                  borderwidth=1,
                 #                  relief="solid")
                 # label.grid(row=i + 2, column=0)
-                label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2,
+                label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left,
                                  width=self.matrix_width, height=self.matrix_height,
                                  borderwidth=1,
                                  relief="solid")
                 label.grid(row=i + 2, column=0)
                 for j in range(matrix.shape[2]):
-                    self.d_matrix[l][i][j] = tk.Entry(frame[l], font=self.font_style_notebook_frame, bg=self.matrix_color_3, width=self.matrix_width,
+                    self.d_matrix[l][i][j] = tk.Entry(frame[l], font=self.font_style_notebook_frame, bg=self.matrix_color_cell, width=self.matrix_width,
                                      borderwidth=1,
                                      relief="solid")
                     self.d_matrix[l][i][j].insert(0, int(matrix[l][i][j]))
                     self.d_matrix[l][i][j].grid(row=i + 2, column=j + 1, ipady=11)  # Сдвигаем на 1 вниз для числа
 
-            self.b[l] = tk.Entry(frame[l], font=self.font_style_notebook_frame, bg=self.matrix_color_3,
+            self.b[l] = tk.Entry(frame[l], font=self.font_style_notebook_frame, bg=self.matrix_color_cell,
                                               width=self.matrix_width,
                                               borderwidth=1,
                                               relief="solid")
@@ -478,20 +490,20 @@ class Window:
         for widget in frame.winfo_children():
             widget.destroy()
 
-        label = tk.Label(frame, text="lambda", font=self.font_style_notebook_frame, bg=self.matrix_color_1,
+        label = tk.Label(frame, text="λ", font=self.font_style_notebook_frame, bg=self.matrix_color_up,
                          width=self.matrix_width, height=self.matrix_height,
                          borderwidth=1,
                          relief="solid")
         label.grid(row=0, column=1)
 
         for i in range(vector.shape[0]):
-            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2,
+            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left,
                              width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1,
                              relief="solid")
             label.grid(row=i + 1, column=0)
             self.l[i] = tk.Entry(frame, font=self.font_style_notebook_frame,
-                                              bg=self.matrix_color_3, width=self.matrix_width,
+                                              bg=self.matrix_color_cell, width=self.matrix_width,
                                               borderwidth=1,
                                               relief="solid")
             self.l[i].insert(0, int(vector[i]))
@@ -521,32 +533,32 @@ class Window:
     def show_matrix_on_frame(self, matrix, res, frame):
         for widget in frame.winfo_children():
             widget.destroy()
-        # label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_1,
+        # label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_up,
         #                  width=int(self.matrix_width * matrix.shape[0] * 1.06), height=self.matrix_height, borderwidth=1,
         #                  relief="solid")
         # label.grid(row=0, column=1, columnspan=matrix.shape[1])
 
-        # label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
+        # label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
         #                  relief="solid")
         # label.grid(row=0, column=0, rowspan=2)
 
         for i in range(len(matrix)):
-            label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_1, width=self.matrix_width, height=self.matrix_height,
+            label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1, relief="solid")
             label.grid(row=1, column=i + 1)
 
         for i in range(len(matrix)):
-            # label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2, width=int(self.matrix_width*2.5), height=self.matrix_height,
+            # label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height,
             #                  borderwidth=1,
             #                  relief="solid")
             # label.grid(row=i + 2, column=0)
-            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_2,
+            label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left,
                              width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1,
                              relief="solid")
             label.grid(row=i + 2, column=0)
             for j in range(len(matrix[i])):
-                color = self.matrix_color_3
+                color = self.matrix_color_cell
                 if(res[i][j] == 1):
                     color = self.select_color_1
                 if(res[i][j] == 2):
@@ -557,25 +569,19 @@ class Window:
                 label.grid(row=i + 2, column=j + 1)
 
     def generate_matrix(self):
-        N = int(self.entry_n.get())
-        # k = int(self.entry_k.get())
+        n = int(self.entry_n.get())
+        k = int(self.entry_k.get())
+        n_max = int(self.entry_n_max.get())
         c_min = int(self.entry_c_min.get())
         c_max = int(self.entry_c_max.get()) + 1
-        # d_min = int(self.entry_d_min.get())
-        # d_max = int(self.entry_d_max.get()) + 1
-        # b_max = int(self.entry_b_max.get()) + 1
+
+        if not self.validate_entry(n, k, n_max, c_min, c_max):
+            return
+
         is_sort_matrix_y = self.entry_is_sort_matrix_y.get()
         is_sort_matrix_x = self.entry_is_sort_matrix_x.get()
 
-        if c_min >= c_max or N < 1 or N > 15 or c_min < 0:
-            self.sum_entry_veng_max.delete(0, tk.END)
-            self.sum_entry_veng_max.insert(0, "ERROR")
-
-            self.sum_entry_greedy_d.delete(0, tk.END)
-            self.sum_entry_greedy_d.insert(0, "ERROR")
-            raise ValueError("Минимальное значение должно быть меньше максимального.")
-
-        c = create_c(N, c_min, c_max)
+        c = create_c(n, c_min, c_max)
         # d = self.get_d_matrix()
         # b = self.get_b()
 
@@ -596,6 +602,13 @@ class Window:
         self.show_matrix_on_frame(c, res, self.frame_res)
 
     def calculate_matrix(self):
+        n = int(self.entry_n.get())
+        k = int(self.entry_k.get())
+        n_max = int(self.entry_n_max.get())
+        c_min = int(self.entry_c_min.get())
+        c_max = int(self.entry_c_max.get()) + 1
+
+        self.validate_entry(n, k, n_max, c_min, c_max)
 
         n = int(self.entry_n.get())
         k = int(self.entry_k.get())
@@ -605,13 +618,40 @@ class Window:
         b = self.get_b()
         l = np.array([1]*k)
 
-        res = main(n, k, n_max, c, d, b, l)
-
-        #self.sum_entry_veng_max.delete(0, tk.END)
-        #self.sum_entry_veng_max.insert(0, str(f"{round(total_optimal_max, 2)} ({round(time_optimal, 2)} сек.)"))
+        sum, res = main(n, k, n_max, c, d, b, l)
 
         self.show_matrix_on_frame(c, res, self.frame_res)
 
+        self.sum_entry.delete(0, tk.END)
+        self.sum_entry.insert(0, str(f"{round(sum, 2)}"))
+
+    def validate_entry(self, n, k, n_max, c_min, c_max):
+        try:
+            n_max = int(self.entry_n_max.get())
+            if not (1 <= n <= 15 and 1 <= k <= 10 and 1 <= n_max <= 100000 and 0 <= c_min < c_max <= 100000):
+                raise ValueError
+            self.sum_entry.delete(0, tk.END)
+            self.sum_entry.config(foreground='black')
+            return True
+        except ValueError:
+            self.sum_entry.delete(0, tk.END)
+            self.sum_entry.insert(0, "ERROR")
+            self.sum_entry.config(foreground='red')
+            return False
+
+    def check_n_max(self, event=None):
+        try:
+            n_max = int(self.entry_n_max.get())
+            if not (1 <= n_max <= 100000):
+                raise ValueError
+            self.sum_entry.delete(0, tk.END)
+            self.sum_entry.config(foreground='black')
+            return True
+        except ValueError:
+            self.sum_entry.delete(0, tk.END)
+            self.sum_entry.insert(0, "ERROR")
+            self.sum_entry.config(foreground='red')
+            return False
     def on_close(self):
         self.root.destroy()
         sys.exit()
