@@ -106,7 +106,7 @@ class Window:
         self.entry_n = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
         self.entry_n.insert(0, "15")
         self.entry_n.grid(row=1, column=2)
-        self.entry_n.bind("<KeyRelease>", self.change_entry)
+        self.entry_n.bind("<KeyRelease>", self.change_entry_n)
 
         tk.Label(self.left_frame, text="не более 15", bg=self.background_color, font=self.font_style).grid(row=1, column=3, sticky="w")
 
@@ -123,7 +123,7 @@ class Window:
         self.entry_k = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
         self.entry_k.insert(0, "1")
         self.entry_k.grid(row=2, column=2)
-        self.entry_k.bind("<KeyRelease>", self.change_entry)
+        self.entry_k.bind("<KeyRelease>", self.change_entry_k)
 
         tk.Label(self.left_frame, text="не более 10", bg=self.background_color, font=self.font_style).grid(row=2, column=3, sticky="w")
 
@@ -358,7 +358,7 @@ class Window:
 
         self.root.destroy()
 
-    def change_entry(self, event):
+    def change_entry_n(self, event):
         n = int(self.entry_n.get())
         k = int(self.entry_k.get())
         n_max = int(self.entry_n_max.get())
@@ -399,6 +399,45 @@ class Window:
         self.create_d_matrix(matrix_d, vector, self.frame_d)
         self.create_lambda(vector, self.frame_lambda)
         self.show_matrix_on_frame(matrix, matrix, self.frame_res)
+
+    def change_entry_k(self, event):
+        n = int(self.entry_n.get())
+        k = int(self.entry_k.get())
+        n_max = int(self.entry_n_max.get())
+        c_min = int(self.entry_c_min.get())
+        c_max = int(self.entry_c_max.get()) + 1
+
+        if not self.validate_entry(n, k, n_max, c_min, c_max):
+            return
+
+        self.d_matrix = [[[]]]
+        self.b = []
+
+        matrix = np.zeros((int(self.entry_n.get()), int(self.entry_n.get())))
+        matrix_d = np.zeros((int(self.entry_k.get()), int(self.entry_n.get()), int(self.entry_n.get())))
+        vector = np.ones(int(self.entry_k.get()))
+
+        for tab_id in self.notebook.tabs():
+            tab_text = self.notebook.tab(tab_id, "text")
+            if tab_text.startswith('D') or tab_text == 'X' or tab_text == 'λ':
+                tab_widget = self.notebook.nametowidget(tab_id)
+                self.notebook.forget(tab_id)
+                tab_widget.destroy()
+
+        self.frame_d = []
+        self.frame_lambda = ttk.Frame(self.notebook, style="Custom.TFrame")
+        self.frame_res = ttk.Frame(self.notebook, style="Custom.TFrame")
+
+        for i in range(int(self.entry_k.get())):
+            self.frame_d.append(ttk.Frame(self.notebook, style="Custom.TFrame"))
+        for i in range(int(self.entry_k.get())):
+            self.notebook.add(self.frame_d[i], text=f"D{i+1}")
+        self.notebook.add(self.frame_lambda, text="λ")
+        self.notebook.add(self.frame_res, text="X")
+
+        self.create_d_matrix(matrix_d, vector, self.frame_d)
+        self.create_lambda(vector, self.frame_lambda)
+        self.show_matrix_on_frame(self.get_c_matrix(), self.get_c_matrix(), self.frame_res)
 
     def create_c_matrix(self, matrix, frame):
         self.c_matrix = [[0 for _ in range(matrix.shape[0])] for _ in range(matrix.shape[0])]
