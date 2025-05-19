@@ -13,7 +13,6 @@ class Window:
         else:
             base_path = os.path.dirname(__file__)
 
-        # Создание основного окна
         self.root = tk.Tk()
         self.root.title("Приближенный метод")
 
@@ -32,9 +31,9 @@ class Window:
         self.path_img_lambda = os.path.join(base_path, 'images', 'empty.png')
         self.path_img_empty = os.path.join(base_path, 'images', 'empty.png')
 
-        self.background_color = "#E3F2FD" # "#F0F0F0"
-        self.entry_color = "#F5F9FF" # "#FFFFFF"
-        self.button_color = "#5ba5fa" # "#5D6D7E"
+        self.background_color = "#E3F2FD"
+        self.entry_color = "#F5F9FF"
+        self.button_color = "#5ba5fa"
         self.matrix_color_up = "#d9dadb"
         self.matrix_color_left = "#e1e3e6"
         self.matrix_color_cell = "#FDF6E3"
@@ -99,8 +98,8 @@ class Window:
         self.original_image = Image.open(self.path_img_n)
         self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_n = ImageTk.PhotoImage(self.resized_image)
-        self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_n)  # put the image on a label
-        self.label.grid(row=1, column=0)  # put the label in the grid
+        self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_n)
+        self.label.grid(row=1, column=0)
 
         tk.Label(self.left_frame, text="n:", bg=self.background_color, font=self.font_style).grid(row=1, column=1)
         self.entry_n = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
@@ -116,8 +115,8 @@ class Window:
         self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_k = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color,
-                              image=self.img_k)  # put the image on a label
-        self.label.grid(row=2, column=0)  # put the label in the grid
+                              image=self.img_k)
+        self.label.grid(row=2, column=0)
 
         tk.Label(self.left_frame, text="k:", bg=self.background_color, font=self.font_style).grid(row=2, column=1)
         self.entry_k = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
@@ -133,8 +132,8 @@ class Window:
         self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.img_n_max = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color,
-                              image=self.img_n_max)  # put the image on a label
-        self.label.grid(row=3, column=0)  # put the label in the grid
+                              image=self.img_n_max)
+        self.label.grid(row=3, column=0)
 
         tk.Label(self.left_frame, text="N_max:", bg=self.background_color, font=self.font_style).grid(row=3, column=1)
         self.entry_n_max = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
@@ -176,71 +175,6 @@ class Window:
 
         tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=5, column=3, sticky="w")
 
-        '''### d_min
-
-        self.original_image = Image.open(self.path_img_d_min)
-        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
-        self.img_d_min = ImageTk.PhotoImage(self.resized_image)
-        self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_d_min)
-        self.label.image = self.img_d_min
-        self.label.grid(row=6, column=0)
-
-        tk.Label(self.left_frame, text="d_min:", bg=self.background_color, font=self.font_style).grid(row=6, column=1)
-        self.entry_d_min = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_d_min.insert(0, "0")
-        self.entry_d_min.grid(row=6, column=2)
-
-        tk.Label(self.left_frame, text="не менее 0", bg=self.background_color, font=self.font_style).grid(row=6, column=3, sticky="w")
-
-        ### d_max
-
-        self.original_image = Image.open(self.path_img_d_max)
-        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
-        self.img_d_max = ImageTk.PhotoImage(self.resized_image)
-        self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_d_max)
-        self.label.image = self.img_d_max
-        self.label.grid(row=7, column=0)
-
-        tk.Label(self.left_frame, text="d_max:", bg=self.background_color, font=self.font_style).grid(row=7, column=1)
-        self.entry_d_max = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_d_max.insert(0, "1")
-        self.entry_d_max.grid(row=7, column=2)
-
-        tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=7, column=3, sticky="w")
-
-        ### b_max
-
-        self.original_image = Image.open(self.path_img_b_max)
-        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
-        self.img_b_max = ImageTk.PhotoImage(self.resized_image)
-        self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_b_max)
-        self.label.image = self.img_b_max
-        self.label.grid(row=8, column=0)
-
-        tk.Label(self.left_frame, text="b_max:", bg=self.background_color, font=self.font_style).grid(row=8, column=1)
-        self.entry_b_max = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_b_max.insert(0, "1")
-        self.entry_b_max.grid(row=8, column=2)
-
-        tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=8, column=3, sticky="w")
-
-        ### lambda
-
-        self.original_image = Image.open(self.path_img_lambda)
-        self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
-        self.img_lambda = ImageTk.PhotoImage(self.resized_image)
-        self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.img_lambda)
-        self.label.image = self.img_lambda
-        self.label.grid(row=9, column=0)
-
-        tk.Label(self.left_frame, text="lambda:", bg=self.background_color, font=self.font_style).grid(row=9, column=1)
-        self.entry_lambda = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_lambda.insert(0, "1")
-        self.entry_lambda.grid(row=9, column=2)
-
-        tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=9,
-                                                                                                              column=3,
-                                                                                                              sticky="w")'''
         #####################################
 
         tk.Label(self.left_frame, text="Расстановка по строкам", bg=self.background_color, font=self.font_style_head).grid(row=10,
@@ -328,22 +262,6 @@ class Window:
         self.iter_entry_phi = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width))
         self.iter_entry_phi.grid(row=25, column=3, columnspan=1)
 
-        '''label = tk.Label(self.left_frame, bg=self.background_color, image=self.my_image)
-        label.image = self.my_image
-        label.grid(row=21, column=0)
-
-        tk.Label(self.left_frame, text="Наивный", bg=self.background_color, font=self.font_style).grid(row=21, column=1)
-        self.sum_entry_greedy_d = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width * 2)
-        self.sum_entry_greedy_d.grid(row=21, column=2, columnspan=2)
-
-        label = tk.Label(self.left_frame, bg=self.background_color, image=self.my_image)
-        label.image = self.my_image
-        label.grid(row=22, column=0)
-
-        tk.Label(self.left_frame, text="Погрешность", bg=self.background_color, font=self.font_style).grid(row=22, column=1)
-        self.error = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width * 2)
-        self.error.grid(row=22, column=2, columnspan=2)'''
-
         self.button_generate = tk.Button(self.left_frame, text="Расчитать", font=self.font_style, bg=self.button_color,
                                     command=self.calculate_matrix)
         self.button_generate.grid(row=26, column=0, columnspan=4, pady=10)
@@ -382,7 +300,6 @@ class Window:
         self.create_d_matrix(matrix_d, vector, self.frame_d)
         self.create_lambda(vector, self.frame_lambda)
 
-        # self.show_matrix_on_frame(matrix, matrix, self.frame_veng_max)
         self.show_matrix_on_frame(matrix, matrix, self.frame_res_1)
         self.show_matrix_on_frame(matrix, matrix, self.frame_res_phi)
 
@@ -482,24 +399,12 @@ class Window:
         for widget in frame.winfo_children():
             widget.destroy()
 
-        # label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=int(self.matrix_width * matrix.shape[0]*1.06), height=self.matrix_height, borderwidth=1,
-        #                  relief="solid")
-        # label.grid(row=0, column=1, columnspan=matrix.shape[1])
-
-        # label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
-        #                  relief="solid")
-        # label.grid(row=0, column=0, rowspan=2)
-
         for i in range(len(matrix)):
             label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1, relief="solid")
             label.grid(row=1, column=i + 1)
 
         for i in range(len(matrix)):
-            # label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height,
-            #                  borderwidth=1,
-            #                  relief="solid")
-            # label.grid(row=i + 2, column=0)
             label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left,
                              width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1,
@@ -510,7 +415,7 @@ class Window:
                                  borderwidth=1,
                                  relief="solid")
                 self.c_matrix[i][j].insert(0, int(matrix[i][j]))
-                self.c_matrix[i][j].grid(row=i + 2, column=j + 1, ipady=11)  # Сдвигаем на 1 вниз для числа
+                self.c_matrix[i][j].grid(row=i + 2, column=j + 1, ipady=11)
 
     def create_d_matrix(self, matrix, vector, frame):
         self.d_matrix = [[[0 for _ in range(matrix.shape[2])] for _ in range(matrix.shape[1])] for _ in range(len(frame))]
@@ -518,14 +423,6 @@ class Window:
         for l in range(matrix.shape[0]):
             for widget in frame[l].winfo_children():
                 widget.destroy()
-
-            # label = tk.Label(frame[l], text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=int(self.matrix_width * matrix.shape[1]*1.06), height=self.matrix_height, borderwidth=1,
-            #                  relief="solid")
-            # label.grid(row=0, column=1, columnspan=matrix.shape[1])
-
-            # label = tk.Label(frame[l], text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
-            #                  relief="solid")
-            # label.grid(row=0, column=0, rowspan=2)
 
             label = tk.Label(frame[l], text="b", font=self.font_style_notebook_frame,
                              bg=self.matrix_color_param, width=self.matrix_width, height=self.matrix_height,
@@ -539,10 +436,6 @@ class Window:
                 label.grid(row=1, column=i + 1)
 
             for i in range(matrix.shape[1]):
-                # label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height,
-                #                  borderwidth=1,
-                #                  relief="solid")
-                # label.grid(row=i + 2, column=0)
                 label = tk.Label(frame[l], text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left,
                                  width=self.matrix_width, height=self.matrix_height,
                                  borderwidth=1,
@@ -553,7 +446,7 @@ class Window:
                                      borderwidth=1,
                                      relief="solid")
                     self.d_matrix[l][i][j].insert(0, int(matrix[l][i][j]))
-                    self.d_matrix[l][i][j].grid(row=i + 2, column=j + 1, ipady=11)  # Сдвигаем на 1 вниз для числа
+                    self.d_matrix[l][i][j].grid(row=i + 2, column=j + 1, ipady=11)
 
             self.b[l] = tk.Entry(frame[l], font=self.font_style_notebook_frame, bg=self.matrix_color_cell,
                                               width=self.matrix_width,
@@ -584,7 +477,7 @@ class Window:
                                               borderwidth=1,
                                               relief="solid")
             self.l[i].insert(0, int(vector[i]))
-            self.l[i].grid(row=i + 1, column=1, ipady=11)  # Сдвигаем на 1 вниз для числа
+            self.l[i].grid(row=i + 1, column=1, ipady=11)
 
     def get_c_matrix(self):
         c = np.zeros((len(self.c_matrix),len(self.c_matrix)))
@@ -616,25 +509,12 @@ class Window:
     def show_matrix_on_frame(self, matrix, res, frame):
         for widget in frame.winfo_children():
             widget.destroy()
-        # label = tk.Label(frame, text="Дни", font=self.font_style_notebook_frame, bg=self.matrix_color_up,
-        #                  width=int(self.matrix_width * matrix.shape[0] * 1.06), height=self.matrix_height, borderwidth=1,
-        #                  relief="solid")
-        # label.grid(row=0, column=1, columnspan=matrix.shape[1])
-
-        # label = tk.Label(frame, text="Подразделения", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height*2, borderwidth=1,
-        #                  relief="solid")
-        # label.grid(row=0, column=0, rowspan=2)
-
         for i in range(len(matrix)):
             label = tk.Label(frame, text=i + 1, font=self.font_style_notebook_frame, bg=self.matrix_color_up, width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1, relief="solid")
             label.grid(row=1, column=i + 1)
 
         for i in range(len(matrix)):
-            # label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left, width=int(self.matrix_width*2.5), height=self.matrix_height,
-            #                  borderwidth=1,
-            #                  relief="solid")
-            # label.grid(row=i + 2, column=0)
             label = tk.Label(frame, text=f"{i + 1}", font=self.font_style_notebook_frame, bg=self.matrix_color_left,
                              width=self.matrix_width, height=self.matrix_height,
                              borderwidth=1,
@@ -665,8 +545,6 @@ class Window:
         is_sort_matrix_x = self.entry_is_sort_matrix_x.get()
 
         c = create_c(n, c_min, c_max)
-        # d = self.get_d_matrix()
-        # b = self.get_b()
 
         if (is_sort_matrix_y == "1"):
             c = increase_by_row(c)
@@ -679,7 +557,6 @@ class Window:
             c = de_increase_by_col(c)
 
         self.create_c_matrix(c, self.frame_c)
-        # self.create_d_matrix(d, b, self.frame_d)
 
         res = np.zeros((int(self.entry_n.get()), int(self.entry_n.get())))
         self.show_matrix_on_frame(c, res, self.frame_res_1)

@@ -39,7 +39,6 @@ def summ_perm(c, perm_1, perm_2):
 def veng_max(c):
     cT = c.T
     max_cT = np.max(cT)
-    # cost_cT = cT
     cost_cT = max_cT - cT
     row_ind, col_ind = linear_sum_assignment(cost_cT)
     x = np.zeros(c.shape)
@@ -184,7 +183,6 @@ if __name__ == "__main__":
     k = 2
     n_max = 10
     n_0 = 0
-    #phi = 1/(n_0+1)
     c = np.array([[5, 4, 3, 6],
                   [3, 5, 3, 3],
                   [3, 4, 5, 3],
