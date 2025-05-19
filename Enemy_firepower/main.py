@@ -16,13 +16,9 @@ def generate_matrix_and_vector(new_c=None):
     is_sort_matrix_y = entry_is_sort_matrix_y.get()
     is_sort_matrix_x = entry_is_sort_matrix_x.get()
 
-    # Проверка на корректность диапазонов
     if c_min >= c_max or k < 1.0 or N < 1 or N > 15 or k < 0 or c_min < 0:
         sum_entry_veng_max.delete(0, tk.END)
         sum_entry_veng_max.insert(0, "ERROR")
-
-        # sum_entry_greedy.delete(0, tk.END)
-        # sum_entry_greedy.insert(0, "ERROR")
 
         sum_entry_greedy_d.delete(0, tk.END)
         sum_entry_greedy_d.insert(0, "ERROR")
@@ -118,7 +114,7 @@ def show_c(matrix):
             label = tk.Label(frame_c_and_x, text=int(matrix[i][j]), font=font_style_notebook_frame, bg=matrix_color_3, width=matrix_width, height=matrix_height,
                              borderwidth=1,
                              relief="solid")
-            label.grid(row=i + 2, column=j + 1)  # Сдвигаем на 1 вниз для числа
+            label.grid(row=i + 2, column=j + 1)
 
 
 def show_matrix_on_frame(matrix, res, frame):
@@ -164,9 +160,6 @@ def example_matrix_3():
     entry_c_max.delete(0, tk.END)
     entry_c_max.insert(0, "5")
 
-    #entry_k.delete(0, tk.END)
-    #entry_k.insert(0, "5.0")
-
     c = np.array([[5, 4, 2],
                   [4, 5, 4],
                   [2, 4, 5]])
@@ -181,9 +174,6 @@ def example_matrix_5():
 
     entry_c_max.delete(0, tk.END)
     entry_c_max.insert(0, "10")
-
-    #entry_k.delete(0, tk.END)
-    #entry_k.insert(0, "5.0")
 
     c = np.array([[1, 2, 3, 8, 10],
                   [2, 3, 8, 10, 8],
@@ -202,7 +192,6 @@ if getattr(sys, 'frozen', False):
 else:
     base_path = os.path.dirname(__file__)
 
-# Создание основного окна
 root = tk.Tk()
 root.title("Огневая мощь противника")
 
@@ -221,9 +210,9 @@ path_img_empty = os.path.join(base_path, 'images', 'empty.png')
 background_color = "#7BA05B"
 entry_color = "#B8D8B0"
 button_color = "#B0524A"
-matrix_color_1 = "#918151" # left
-matrix_color_2 = "#4F7942" # up
-matrix_color_3 = "#f8f8d9" # center
+matrix_color_1 = "#918151"
+matrix_color_2 = "#4F7942"
+matrix_color_3 = "#f8f8d9"
 select_color_1 = "lightcoral"
 select_color_2 = "lightblue"
 
@@ -279,8 +268,8 @@ tk.Label(left_frame, text="Входные параметры", bg=background_col
 original_image = Image.open(path_img_group)
 resized_image = original_image.resize((img_size, img_size), Image.LANCZOS)
 img_group = ImageTk.PhotoImage(resized_image)
-label = tk.Label(left_frame, bg=background_color, image = img_group) # put the image on a label
-label.grid(row = 1, column = 0) # put the label in the grid
+label = tk.Label(left_frame, bg=background_color, image = img_group)
+label.grid(row = 1, column = 0)
 
 tk.Label(left_frame, text="Число подразделений:", bg=background_color, font=font_style).grid(row=1, column=1, columnspan=2)
 entry_n = tk.Entry(left_frame, bg = entry_color, font=font_style, width=entry_width)
@@ -375,13 +364,6 @@ button_generate.grid(row=19, column=3, columnspan=1, pady=10)
 
 tk.Label(left_frame, text="Результат", bg=background_color, font=font_style_head).grid(row=20, columnspan=5)
 
-'''original_image = Image.open(path_img_empty)
-resized_image = original_image.resize((img_size, img_size), Image.LANCZOS)
-my_image = ImageTk.PhotoImage(resized_image)
-label = tk.Label(left_frame, bg=background_color, image = my_image)
-label.image = my_image
-label.grid(row = 19, column = 0)'''
-
 tk.Label(left_frame, text="S_max", bg=background_color, font=font_style).grid(row=21, column=2)
 tk.Label(left_frame, text="S", bg=background_color, font=font_style).grid(row=21, column=3)
 tk.Label(left_frame, text="Время", bg=background_color, font=font_style).grid(row=21, column=4)
@@ -394,10 +376,6 @@ sum_entry_greedy_d_res.grid(row=22, column=3)
 sum_entry_greedy_d_time = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
 sum_entry_greedy_d_time.grid(row=22, column=4)
 
-'''label = tk.Label(left_frame, bg=background_color, image = my_image)
-label.image = my_image
-label.grid(row = 21, column = 0)'''
-
 tk.Label(left_frame, text="σ₁ и σ₂", bg=background_color, font=font_style).grid(row=23, column=0, columnspan=2, sticky="w")
 sum_entry_veng_max = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
 sum_entry_veng_max.grid(row=23, column=2)
@@ -405,10 +383,6 @@ sum_entry_veng_max_res = tk.Entry(left_frame, bg = entry_color, font=font_style,
 sum_entry_veng_max_res.grid(row=23, column=3)
 sum_entry_veng_max_time = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
 sum_entry_veng_max_time.grid(row=23, column=4)
-
-'''label = tk.Label(left_frame, bg=background_color, image = my_image)
-label.image = my_image
-label.grid(row = 22, column = 0)'''
 
 tk.Label(left_frame, text="Погрешность", bg=background_color, font=font_style).grid(row=24, column=0, columnspan=2, sticky="w")
 error = tk.Entry(left_frame, bg = entry_color, font=font_style, width=int(entry_width*1.2))
