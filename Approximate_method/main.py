@@ -138,11 +138,11 @@ class Window:
 
         tk.Label(self.left_frame, text="N_max:", bg=self.background_color, font=self.font_style).grid(row=3, column=1)
         self.entry_n_max = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_n_max.insert(0, "10")
+        self.entry_n_max.insert(0, "100000")
         self.entry_n_max.grid(row=3, column=2)
         self.entry_n_max.bind("<KeyRelease>", self.check_n_max)
 
-        tk.Label(self.left_frame, text="не более 100000", bg=self.background_color, font=self.font_style).grid(row=3, column=3, sticky="w")
+        tk.Label(self.left_frame, text="не более 10000000", bg=self.background_color, font=self.font_style).grid(row=3, column=3, sticky="w")
 
         ### c_min
 
@@ -155,7 +155,7 @@ class Window:
 
         tk.Label(self.left_frame, text="c_min:", bg=self.background_color, font=self.font_style).grid(row=4, column=1)
         self.entry_c_min = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_c_min.insert(0, "100")
+        self.entry_c_min.insert(0, "10")
         self.entry_c_min.grid(row=4, column=2)
 
         tk.Label(self.left_frame, text="не менее 0", bg=self.background_color, font=self.font_style).grid(row=4, column=3, sticky="w")
@@ -171,7 +171,7 @@ class Window:
 
         tk.Label(self.left_frame, text="c_max:", bg=self.background_color, font=self.font_style).grid(row=5, column=1)
         self.entry_c_max = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=self.entry_width)
-        self.entry_c_max.insert(0, "999")
+        self.entry_c_max.insert(0, "99")
         self.entry_c_max.grid(row=5, column=2)
 
         tk.Label(self.left_frame, text="не более 99999", bg=self.background_color, font=self.font_style).grid(row=5, column=3, sticky="w")
@@ -715,7 +715,7 @@ class Window:
             self.sum_entry_1.delete(0, tk.END)
             self.sum_entry_1.insert(0, str(f"{round(sum_1, 2)}"))
             self.iter_entry_1.delete(0, tk.END)
-            self.iter_entry_1.insert(0, str(f"{round(iter_sum_1, 2)}"))
+            self.iter_entry_1.insert(0, str(f"{round(iter_sum_1+1, 2)}"))
 
         else:
             self.show_matrix_on_frame(c, np.zeros(c.shape), self.frame_res_1)
@@ -723,23 +723,21 @@ class Window:
             self.sum_entry_1.insert(0, "ERROR")
             self.sum_entry_1.config(foreground='red')
             self.iter_entry_1.delete(0, tk.END)
-            self.iter_entry_1.insert(0, "ERROR")
-            self.iter_entry_1.config(foreground='red')
+            self.iter_entry_1.insert(0, str(f"{round(n_max, 2)}"))
 
         if (is_exists_sum_phi):
             self.show_matrix_on_frame(c, x_sum_phi, self.frame_res_phi)
             self.sum_entry_phi.delete(0, tk.END)
             self.sum_entry_phi.insert(0, str(f"{round(sum_phi, 2)}"))
             self.iter_entry_phi.delete(0, tk.END)
-            self.iter_entry_phi.insert(0, str(f"{round(iter_sum_phi, 2)}"))
+            self.iter_entry_phi.insert(0, str(f"{round(iter_sum_phi+1, 2)}"))
         else:
             self.show_matrix_on_frame(c, np.zeros(c.shape), self.frame_res_phi)
             self.sum_entry_phi.delete(0, tk.END)
             self.sum_entry_phi.insert(0, "ERROR")
             self.sum_entry_phi.config(foreground='red')
             self.iter_entry_phi.delete(0, tk.END)
-            self.iter_entry_phi.insert(0, "ERROR")
-            self.iter_entry_phi.config(foreground='red')
+            self.iter_entry_phi.insert(0, str(f"{round(n_max, 2)}"))
 
 
 
@@ -748,7 +746,7 @@ class Window:
     def validate_entry(self, n, k, n_max, c_min, c_max):
         try:
             n_max = int(self.entry_n_max.get())
-            if not (1 <= n <= 15 and 1 <= k <= 10 and 1 <= n_max <= 100000 and 0 <= c_min < c_max <= 100000):
+            if not (1 <= n <= 15 and 1 <= k <= 10 and 1 <= n_max <= 10000000 and 0 <= c_min < c_max <= 10000000):
                 raise ValueError
             self.sum_entry_1.delete(0, tk.END)
             self.sum_entry_1.config(foreground='black')
@@ -763,21 +761,15 @@ class Window:
             self.sum_entry_1.delete(0, tk.END)
             self.sum_entry_1.insert(0, "ERROR")
             self.sum_entry_1.config(foreground='red')
-            self.iter_entry_1.delete(0, tk.END)
-            self.iter_entry_1.insert(0, "ERROR")
-            self.iter_entry_1.config(foreground='red')
             self.sum_entry_phi.delete(0, tk.END)
             self.sum_entry_phi.insert(0, "ERROR")
             self.sum_entry_phi.config(foreground='red')
-            self.iter_entry_phi.delete(0, tk.END)
-            self.iter_entry_phi.insert(0, "ERROR")
-            self.iter_entry_phi.config(foreground='red')
             return False
 
     def check_n_max(self, event=None):
         try:
             n_max = int(self.entry_n_max.get())
-            if not (1 <= n_max <= 100000):
+            if not (1 <= n_max <= 10000000):
                 raise ValueError
             self.sum_entry_1.delete(0, tk.END)
             self.sum_entry_1.config(foreground='black')
