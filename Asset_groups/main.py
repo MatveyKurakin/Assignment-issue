@@ -17,13 +17,9 @@ def generate_matrix_and_vector():
     is_sort_matrix_x = entry_is_sort_matrix_x.get()
     is_sort_vector = entry_is_sort_vector.get()
 
-    # Проверка на корректность диапазонов
     if c_min >= c_max or x_min >= x_max or N < 1 or N > 15 or x_min < 0 or x_max > 1 or c_min < 0:
         sum_entry_veng_max.delete(0, tk.END)
         sum_entry_veng_max.insert(0, "ERROR")
-
-        # sum_entry_greedy.delete(0, tk.END)
-        # sum_entry_greedy.insert(0, "ERROR")
 
         sum_entry_greedy_d.delete(0, tk.END)
         sum_entry_greedy_d.insert(0, "ERROR")
@@ -60,13 +56,6 @@ def generate_matrix_and_vector():
         res_veng_max[row_ind[i]][col_ind[i]] = 1
         total_veng_max += g[row_ind[i]][col_ind[i]]
 
-    # row_ind, col_ind = greedy(g)
-    # res_greedy = np.zeros(g.shape)
-    # total_greedy = potential_profit
-    # for i in range(len(row_ind)):
-    #     res_greedy[row_ind[i]][col_ind[i]] = 1
-    #     total_greedy += g[row_ind[i]][col_ind[i]]
-
     d, potential_profit = create_d(c, x)
 
     row_ind, col_ind = greedy(d)
@@ -80,14 +69,10 @@ def generate_matrix_and_vector():
     sum_entry_veng_max.delete(0, tk.END)
     sum_entry_veng_max.insert(0, str(f"{round(total_veng_max, 2)}"))
 
-    # sum_entry_greedy.delete(0, tk.END)
-    # sum_entry_greedy.insert(0, str(f"{round(total_greedy, 2)} ({round(total_greedy / total_veng_max*100, 2)}%)"))
-
     sum_entry_greedy_d.delete(0, tk.END)
     sum_entry_greedy_d.insert(0, str(f"{round(total_greedy_d, 2)} ({round(total_greedy_d / total_veng_max*100, 2)}%)"))
 
     show_matrix_on_frame(c, res_veng_max, frame_veng_max)
-    # show_matrix_on_frame(c, res_greedy, frame_greedy)
     show_matrix_on_frame(c, res_greedy_d, frame_greedy_d)
 
 def show_c_and_x(matrix, vector):
@@ -116,8 +101,7 @@ def show_c_and_x(matrix, vector):
             label = tk.Label(frame_c_and_x, text=int(matrix[i][j]), font=font_style_notebook_frame, bg="white", width=matrix_width, height=matrix_height,
                              borderwidth=1,
                              relief="solid")
-            label.grid(row=i + 2, column=j + 1)  # Сдвигаем на 1 вниз для числа
-
+            label.grid(row=i + 2, column=j + 1)
 
     label = tk.Label(frame_c_and_x, text="X", font=font_style_notebook_frame, bg="#F09B59", width=matrix_width, height=matrix_height, borderwidth=1,
                      relief="solid")
@@ -166,7 +150,6 @@ if getattr(sys, 'frozen', False):
 else:
     base_path = os.path.dirname(__file__)
 
-# Создание основного окна
 root = tk.Tk()
 root.title("Группы активов")
 
@@ -227,9 +210,9 @@ right_frame.grid(row=0, column=1, padx=10, sticky='nsew')
 
 tk.Label(left_frame, text="Входные параметры", font=font_style_head).grid(row=0, columnspan=4)
 
-img_group = tk.PhotoImage(master=left_frame, file=path_img_group) # your image
-label = tk.Label(left_frame, image = img_group) # put the image on a label
-label.grid(row = 1, column = 0) # put the label in the grid
+img_group = tk.PhotoImage(master=left_frame, file=path_img_group)
+label = tk.Label(left_frame, image = img_group)
+label.grid(row = 1, column = 0)
 
 tk.Label(left_frame, text="Число групп:", font=font_style).grid(row=1, column=1)
 entry_n = tk.Entry(left_frame, font=font_style, width=entry_width)
@@ -354,14 +337,6 @@ tk.Label(left_frame, text="Венгерский", font=font_style).grid(row=19, 
 sum_entry_veng_max = tk.Entry(left_frame, font=font_style, width=entry_width * 2)
 sum_entry_veng_max.grid(row=19, column=2, columnspan=2)
 
-# label = tk.Label(left_frame, image = my_image)
-# label.image = my_image
-# label.grid(row = 20, column = 0)
-
-# tk.Label(left_frame, text="Жадный G", font=font_style).grid(row=20, column=1)
-# sum_entry_greedy = tk.Entry(left_frame, font=font_style)
-# sum_entry_greedy.grid(row=20, column=3)
-
 label = tk.Label(left_frame, image = my_image)
 label.image = my_image
 label.grid(row = 21, column = 0)
@@ -383,12 +358,10 @@ notebook.grid(row=3, column=2, sticky='nsew')
 
 frame_c_and_x = ttk.Frame(notebook)
 frame_veng_max = ttk.Frame(notebook)
-# frame_greedy = ttk.Frame(notebook)
 frame_greedy_d = ttk.Frame(notebook)
 
 notebook.add(frame_c_and_x, text="Матрица C и вектор X")
 notebook.add(frame_veng_max, text="Венгерский")
-# notebook.add(frame_greedy, text="Жадный G")
 notebook.add(frame_greedy_d, text="Жадный")
 
 matrix= np.zeros((int(entry_n.get()),int(entry_n.get())))
@@ -396,7 +369,6 @@ vector= np.zeros(int(entry_n.get()))
 show_c_and_x(matrix, vector)
 
 show_matrix_on_frame(matrix, matrix, frame_veng_max)
-# show_matrix_on_frame(matrix, matrix, frame_greedy)
 show_matrix_on_frame(matrix, matrix, frame_greedy_d)
 
 root.mainloop()
