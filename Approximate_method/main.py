@@ -286,18 +286,47 @@ class Window:
                                          command=self.generate_matrix)
         self.button_generate.grid(row=18, column=0, columnspan=4, pady=10)
 
-        tk.Label(self.left_frame, text="Результат", bg=self.background_color, font=self.font_style_head).grid(row=19, columnspan=4)
+        #####################################
+
+        tk.Label(self.left_frame, text="Алгоритм", bg=self.background_color,
+                 font=self.font_style_head).grid(row=19,
+                                                 columnspan=4)
+
+        self.entry_is_min_or_max = tk.StringVar(value=0)
+
+        self.r_min_or_max_1 = tk.Radiobutton(self.left_frame, text="Минимум", bg=self.background_color,
+                                         variable=self.entry_is_min_or_max, value=0, font=self.font_style)
+        self.r_min_or_max_1.grid(row=20, columnspan=4, sticky="w")
+
+        self.r_min_or_max_2 = tk.Radiobutton(self.left_frame, text="Максимум", bg=self.background_color,
+                                         variable=self.entry_is_min_or_max, value=1, font=self.font_style)
+        self.r_min_or_max_2.grid(row=21, columnspan=4, sticky="w")
+
+        #####################################
+
+        tk.Label(self.left_frame, text="Результат", bg=self.background_color, font=self.font_style_head).grid(row=22, columnspan=4)
 
         self.original_image = Image.open(self.path_img_empty)
         self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
         self.my_image = ImageTk.PhotoImage(self.resized_image)
         self.label = tk.Label(self.left_frame, bg=self.background_color, image=self.my_image)
         self.label.image = self.my_image
-        self.label.grid(row=20, column=0)
+        self.label.grid(row=23, column=0)
 
-        tk.Label(self.left_frame, text="Сумма", bg=self.background_color, font=self.font_style).grid(row=20, column=1)
-        self.sum_entry = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width*2))
-        self.sum_entry.grid(row=20, column=2, columnspan=2)
+        tk.Label(self.left_frame, text="Сумма", bg=self.background_color, font=self.font_style).grid(row=23, column=2, columnspan=1)
+        tk.Label(self.left_frame, text="Итерация", bg=self.background_color, font=self.font_style).grid(row=23, column=3, columnspan=1)
+
+        tk.Label(self.left_frame, text="φ = 1", bg=self.background_color, font=self.font_style).grid(row=24, column=1)
+        self.sum_entry_1 = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width))
+        self.sum_entry_1.grid(row=24, column=2, columnspan=1)
+        self.iter_entry_1 = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width))
+        self.iter_entry_1.grid(row=24, column=3, columnspan=1)
+
+        tk.Label(self.left_frame, text="φ = 1/(N+1)", bg=self.background_color, font=self.font_style).grid(row=25, column=1)
+        self.sum_entry_phi = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width))
+        self.sum_entry_phi.grid(row=25, column=2, columnspan=1)
+        self.iter_entry_phi = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width))
+        self.iter_entry_phi.grid(row=25, column=3, columnspan=1)
 
         '''label = tk.Label(self.left_frame, bg=self.background_color, image=self.my_image)
         label.image = self.my_image
@@ -317,7 +346,7 @@ class Window:
 
         self.button_generate = tk.Button(self.left_frame, text="Расчитать", font=self.font_style, bg=self.button_color,
                                     command=self.calculate_matrix)
-        self.button_generate.grid(row=21, column=0, columnspan=4, pady=10)
+        self.button_generate.grid(row=26, column=0, columnspan=4, pady=10)
 
         #####################################
 
@@ -332,12 +361,14 @@ class Window:
         self.frame_c = ttk.Frame(self.notebook, style="Custom.TFrame")
         self.frame_d = [ttk.Frame(self.notebook, style="Custom.TFrame")]
         self.frame_lambda = ttk.Frame(self.notebook, style="Custom.TFrame")
-        self.frame_res = ttk.Frame(self.notebook, style="Custom.TFrame")
+        self.frame_res_1 = ttk.Frame(self.notebook, style="Custom.TFrame")
+        self.frame_res_phi = ttk.Frame(self.notebook, style="Custom.TFrame")
 
         self.notebook.add(self.frame_c, text="Матрица C")
         self.notebook.add(self.frame_d[0], text="D1")
         self.notebook.add(self.frame_lambda, text="λ")
-        self.notebook.add(self.frame_res, text="X")
+        self.notebook.add(self.frame_res_1, text="X φ=1")
+        self.notebook.add(self.frame_res_phi, text="X φ=1/(N+1)")
 
         self.c_matrix = [[]]
         self.d_matrix = [[[]]]
@@ -352,7 +383,8 @@ class Window:
         self.create_lambda(vector, self.frame_lambda)
 
         # self.show_matrix_on_frame(matrix, matrix, self.frame_veng_max)
-        self.show_matrix_on_frame(matrix, matrix, self.frame_res)
+        self.show_matrix_on_frame(matrix, matrix, self.frame_res_1)
+        self.show_matrix_on_frame(matrix, matrix, self.frame_res_phi)
 
         self.root.mainloop()
 
@@ -380,25 +412,28 @@ class Window:
 
         for tab_id in self.notebook.tabs():
             tab_text = self.notebook.tab(tab_id, "text")
-            if tab_text.startswith('D') or tab_text == 'X' or tab_text == 'λ':
+            if tab_text.startswith('D') or tab_text == 'X φ=1' or tab_text == 'X φ=1/(N+1)' or tab_text == 'λ':
                 tab_widget = self.notebook.nametowidget(tab_id)
                 self.notebook.forget(tab_id)
                 tab_widget.destroy()
 
         self.frame_d = []
         self.frame_lambda = ttk.Frame(self.notebook, style="Custom.TFrame")
-        self.frame_res = ttk.Frame(self.notebook, style="Custom.TFrame")
+        self.frame_res_1 = ttk.Frame(self.notebook, style="Custom.TFrame")
+        self.frame_res_phi = ttk.Frame(self.notebook, style="Custom.TFrame")
 
         for i in range(int(self.entry_k.get())):
             self.frame_d.append(ttk.Frame(self.notebook, style="Custom.TFrame"))
         for i in range(int(self.entry_k.get())):
             self.notebook.add(self.frame_d[i], text=f"D{i+1}")
         self.notebook.add(self.frame_lambda, text="λ")
-        self.notebook.add(self.frame_res, text="X")
+        self.notebook.add(self.frame_res_1, text="X φ=1")
+        self.notebook.add(self.frame_res_phi, text="X φ=1/(N+1)")
 
         self.create_d_matrix(matrix_d, vector, self.frame_d)
         self.create_lambda(vector, self.frame_lambda)
-        self.show_matrix_on_frame(matrix, matrix, self.frame_res)
+        self.show_matrix_on_frame(matrix, matrix, self.frame_res_1)
+        self.show_matrix_on_frame(matrix, matrix, self.frame_res_phi)
 
     def change_entry_k(self, event):
         n = int(self.entry_n.get())
@@ -419,25 +454,28 @@ class Window:
 
         for tab_id in self.notebook.tabs():
             tab_text = self.notebook.tab(tab_id, "text")
-            if tab_text.startswith('D') or tab_text == 'X' or tab_text == 'λ':
+            if tab_text.startswith('D') or tab_text == 'X φ=1' or tab_text == 'X φ=1/(N+1)' or tab_text == 'λ':
                 tab_widget = self.notebook.nametowidget(tab_id)
                 self.notebook.forget(tab_id)
                 tab_widget.destroy()
 
         self.frame_d = []
         self.frame_lambda = ttk.Frame(self.notebook, style="Custom.TFrame")
-        self.frame_res = ttk.Frame(self.notebook, style="Custom.TFrame")
+        self.frame_res_1 = ttk.Frame(self.notebook, style="Custom.TFrame")
+        self.frame_res_phi = ttk.Frame(self.notebook, style="Custom.TFrame")
 
         for i in range(int(self.entry_k.get())):
             self.frame_d.append(ttk.Frame(self.notebook, style="Custom.TFrame"))
         for i in range(int(self.entry_k.get())):
             self.notebook.add(self.frame_d[i], text=f"D{i+1}")
         self.notebook.add(self.frame_lambda, text="λ")
-        self.notebook.add(self.frame_res, text="X")
+        self.notebook.add(self.frame_res_1, text="X φ=1")
+        self.notebook.add(self.frame_res_phi, text="X φ=1/(N+1)")
 
         self.create_d_matrix(matrix_d, vector, self.frame_d)
         self.create_lambda(vector, self.frame_lambda)
-        self.show_matrix_on_frame(self.get_c_matrix(), self.get_c_matrix(), self.frame_res)
+        self.show_matrix_on_frame(self.get_c_matrix(), self.get_c_matrix(), self.frame_res_1)
+        self.show_matrix_on_frame(self.get_c_matrix(), self.get_c_matrix(), self.frame_res_phi)
 
     def create_c_matrix(self, matrix, frame):
         self.c_matrix = [[0 for _ in range(matrix.shape[0])] for _ in range(matrix.shape[0])]
@@ -644,7 +682,8 @@ class Window:
         # self.create_d_matrix(d, b, self.frame_d)
 
         res = np.zeros((int(self.entry_n.get()), int(self.entry_n.get())))
-        self.show_matrix_on_frame(c, res, self.frame_res)
+        self.show_matrix_on_frame(c, res, self.frame_res_1)
+        self.show_matrix_on_frame(c, res, self.frame_res_phi)
 
     def calculate_matrix(self):
         n = int(self.entry_n.get())
@@ -662,26 +701,77 @@ class Window:
         d = self.get_d_matrix()
         b = self.get_b()
         l = self.get_l()
+        is_min_or_max = self.entry_is_min_or_max.get()
 
-        sum, res = main(n, k, n_max, c, d, b, l)
+        if (is_min_or_max == "1"):
+            sum_1, x_sum_1, iter_sum_1, is_exists_sum_1 = main_1_max(n, k, 0, n_max, c, d, b, l)
+            sum_phi, x_sum_phi, iter_sum_phi, is_exists_sum_phi = main_phi_max(n, k, 0, n_max, c, d, b, l)
+        if (is_min_or_max == "0"):
+            sum_1, x_sum_1, iter_sum_1, is_exists_sum_1 = main_1_min(n, k, 0, n_max, c, d, b, l)
+            sum_phi, x_sum_phi, iter_sum_phi, is_exists_sum_phi = main_phi_min(n, k, 0, n_max, c, d, b, l)
 
-        self.show_matrix_on_frame(c, res, self.frame_res)
+        if(is_exists_sum_1):
+            self.show_matrix_on_frame(c, x_sum_1, self.frame_res_1)
+            self.sum_entry_1.delete(0, tk.END)
+            self.sum_entry_1.insert(0, str(f"{round(sum_1, 2)}"))
+            self.iter_entry_1.delete(0, tk.END)
+            self.iter_entry_1.insert(0, str(f"{round(iter_sum_1, 2)}"))
 
-        self.sum_entry.delete(0, tk.END)
-        self.sum_entry.insert(0, str(f"{round(sum, 2)}"))
+        else:
+            self.show_matrix_on_frame(c, np.zeros(c.shape), self.frame_res_1)
+            self.sum_entry_1.delete(0, tk.END)
+            self.sum_entry_1.insert(0, "ERROR")
+            self.sum_entry_1.config(foreground='red')
+            self.iter_entry_1.delete(0, tk.END)
+            self.iter_entry_1.insert(0, "ERROR")
+            self.iter_entry_1.config(foreground='red')
+
+        if (is_exists_sum_phi):
+            self.show_matrix_on_frame(c, x_sum_phi, self.frame_res_phi)
+            self.sum_entry_phi.delete(0, tk.END)
+            self.sum_entry_phi.insert(0, str(f"{round(sum_phi, 2)}"))
+            self.iter_entry_phi.delete(0, tk.END)
+            self.iter_entry_phi.insert(0, str(f"{round(iter_sum_phi, 2)}"))
+        else:
+            self.show_matrix_on_frame(c, np.zeros(c.shape), self.frame_res_phi)
+            self.sum_entry_phi.delete(0, tk.END)
+            self.sum_entry_phi.insert(0, "ERROR")
+            self.sum_entry_phi.config(foreground='red')
+            self.iter_entry_phi.delete(0, tk.END)
+            self.iter_entry_phi.insert(0, "ERROR")
+            self.iter_entry_phi.config(foreground='red')
+
+
+
+
 
     def validate_entry(self, n, k, n_max, c_min, c_max):
         try:
             n_max = int(self.entry_n_max.get())
             if not (1 <= n <= 15 and 1 <= k <= 10 and 1 <= n_max <= 100000 and 0 <= c_min < c_max <= 100000):
                 raise ValueError
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.config(foreground='black')
+            self.sum_entry_1.delete(0, tk.END)
+            self.sum_entry_1.config(foreground='black')
+            self.iter_entry_1.delete(0, tk.END)
+            self.iter_entry_1.config(foreground='black')
+            self.sum_entry_phi.delete(0, tk.END)
+            self.sum_entry_phi.config(foreground='black')
+            self.iter_entry_phi.delete(0, tk.END)
+            self.iter_entry_phi.config(foreground='black')
             return True
         except ValueError:
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.insert(0, "ERROR")
-            self.sum_entry.config(foreground='red')
+            self.sum_entry_1.delete(0, tk.END)
+            self.sum_entry_1.insert(0, "ERROR")
+            self.sum_entry_1.config(foreground='red')
+            self.iter_entry_1.delete(0, tk.END)
+            self.iter_entry_1.insert(0, "ERROR")
+            self.iter_entry_1.config(foreground='red')
+            self.sum_entry_phi.delete(0, tk.END)
+            self.sum_entry_phi.insert(0, "ERROR")
+            self.sum_entry_phi.config(foreground='red')
+            self.iter_entry_phi.delete(0, tk.END)
+            self.iter_entry_phi.insert(0, "ERROR")
+            self.iter_entry_phi.config(foreground='red')
             return False
 
     def check_n_max(self, event=None):
@@ -689,13 +779,28 @@ class Window:
             n_max = int(self.entry_n_max.get())
             if not (1 <= n_max <= 100000):
                 raise ValueError
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.config(foreground='black')
+            self.sum_entry_1.delete(0, tk.END)
+            self.sum_entry_1.config(foreground='black')
+            self.iter_entry_1.delete(0, tk.END)
+            self.iter_entry_1.config(foreground='black')
+            self.sum_entry_phi.delete(0, tk.END)
+            self.sum_entry_phi.config(foreground='black')
+            self.iter_entry_phi.delete(0, tk.END)
+            self.iter_entry_phi.config(foreground='black')
             return True
         except ValueError:
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.insert(0, "ERROR")
-            self.sum_entry.config(foreground='red')
+            self.sum_entry_1.delete(0, tk.END)
+            self.sum_entry_1.insert(0, "ERROR")
+            self.sum_entry_1.config(foreground='red')
+            self.iter_entry_1.delete(0, tk.END)
+            self.iter_entry_1.insert(0, "ERROR")
+            self.iter_entry_1.config(foreground='red')
+            self.sum_entry_phi.delete(0, tk.END)
+            self.sum_entry_phi.insert(0, "ERROR")
+            self.sum_entry_phi.config(foreground='red')
+            self.iter_entry_phi.delete(0, tk.END)
+            self.iter_entry_phi.insert(0, "ERROR")
+            self.iter_entry_phi.config(foreground='red')
             return False
     def on_close(self):
         self.root.destroy()
