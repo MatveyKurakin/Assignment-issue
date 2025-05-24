@@ -73,6 +73,7 @@ class Window:
         self.entry_width = round(self.coef_entry_width * self.root.winfo_screenwidth())
 
         self.font_style = ("Arial", self.base_font_size)
+        self.font_style_res = ("Arial", self.base_font_size, "bold")
         self.font_style_head = ("Arial", self.head_font_size, "bold")
         self.font_style_notebook = ('Helvetica', self.notebook_font_size)
         self.font_style_notebook_frame = ("Arial", self.notebook_frame_font_size)
@@ -248,8 +249,8 @@ class Window:
         self.label.grid(row=23, column=0)
 
         tk.Label(self.left_frame, text="Целевая функция S", bg=self.background_color, font=self.font_style).grid(row=23, column=0, columnspan=3, sticky="w")
-        self.sum_entry = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width))
-        self.sum_entry.grid(row=23, column=3, columnspan=1)
+        self.sum_label = tk.Label(self.left_frame, text="0", bg=self.background_color, font=self.font_style_res, width=(self.entry_width))
+        self.sum_label.grid(row=23, column=3, columnspan=1)
         # tk.Label(self.left_frame, text="Итерация", bg=self.background_color, font=self.font_style).grid(row=23, column=3, columnspan=1)
 
         self.original_image = Image.open(self.path_img_empty)
@@ -260,8 +261,8 @@ class Window:
         self.label.grid(row=24, column=0)
 
         tk.Label(self.left_frame, text="Число итераций при φ = 1", bg=self.background_color, font=self.font_style).grid(row=24, column=0, columnspan=3, sticky="w")
-        self.iter_entry_1 = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width))
-        self.iter_entry_1.grid(row=24, column=3, columnspan=1)
+        self.iter_label_1 = tk.Label(self.left_frame, text="0", bg=self.background_color, font=self.font_style_res, width=(self.entry_width))
+        self.iter_label_1.grid(row=24, column=3, columnspan=1)
 
         self.original_image = Image.open(self.path_img_empty)
         self.resized_image = self.original_image.resize((self.ing_width, self.img_height), Image.LANCZOS)
@@ -271,8 +272,8 @@ class Window:
         self.label.grid(row=25, column=0)
 
         tk.Label(self.left_frame, text="Число итераций при φ = 1/(N+1)", bg=self.background_color, font=self.font_style).grid(row=25, column=0, columnspan=3, sticky="w")
-        self.iter_entry_phi = tk.Entry(self.left_frame, bg=self.entry_color, font=self.font_style, width=(self.entry_width))
-        self.iter_entry_phi.grid(row=25, column=3, columnspan=1)
+        self.iter_label_phi = tk.Label(self.left_frame, text="0", bg=self.background_color, font=self.font_style_res, width=(self.entry_width))
+        self.iter_label_phi.grid(row=25, column=3, columnspan=1)
 
         #####################################
 
@@ -313,20 +314,55 @@ class Window:
 
         self.notebook.add(self.frame_c, text="Матрица C")
         self.notebook.add(self.frame_d[0], text="D1")
-        self.notebook.add(self.frame_res, text="Перестановка X*")
+        self.notebook.add(self.frame_res, text="Оптимальное решение")
 
         self.c_matrix = [[]]
         self.d_matrix = [[[]]]
         self.b = []
         self.l = []
-
+        c_1 = np.array([
+            [49, 20, 23, 68, 45, 89, 31, 11, 12, 43, 71, 92, 62, 96, 33],
+            [27, 34, 33, 91, 46, 76, 94, 14, 94, 94, 60, 50, 78, 41, 87],
+            [62, 74, 35, 13, 92, 91, 26, 27, 93, 11, 11, 94, 15, 14, 54],
+            [72, 69, 17, 50, 49, 79, 37, 33, 32, 32, 96, 62, 30, 59, 49],
+            [58, 34, 55, 41, 87, 10, 84, 80, 70, 80, 61, 63, 79, 58, 86],
+            [52, 44, 15, 89, 24, 50, 68, 43, 71, 31, 31, 62, 39, 91, 12],
+            [81, 56, 54, 26, 58, 72, 44, 69, 91, 83, 86, 74, 28, 69, 87],
+            [13, 63, 38, 33, 55, 97, 24, 21, 11, 12, 51, 70, 26, 71, 23],
+            [14, 89, 30, 87, 94, 96, 27, 15, 41, 99, 49, 59, 28, 64, 64],
+            [91, 32, 43, 88, 48, 52, 81, 70, 24, 75, 69, 92, 59, 97, 63],
+            [56, 75, 87, 48, 91, 55, 37, 23, 51, 51, 43, 75, 97, 95, 32],
+            [43, 19, 39, 37, 45, 89, 13, 28, 26, 38, 44, 58, 60, 46, 29],
+            [86, 46, 33, 12, 86, 42, 49, 29, 82, 91, 13, 35, 26, 98, 11],
+            [34, 35, 65, 23, 35, 81, 68, 78, 66, 30, 77, 12, 97, 24, 51],
+            [36, 32, 65, 86, 90, 53, 47, 53, 35, 26, 51, 78, 67, 14, 96]
+        ])
+        d_1 = np.array([[
+            [0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+        ]])
+        b_1 = np.array([2])
+        l_1 = np.array([1])
         matrix = np.zeros((int(self.entry_n.get()), int(self.entry_n.get())))
         matrix_d = np.zeros((int(self.entry_k.get()), int(self.entry_n.get()), int(self.entry_n.get())))
         vector = np.ones(int(self.entry_k.get()))
-        self.create_c_matrix(matrix, self.frame_c)
-        self.create_d_matrix(matrix_d, vector, self.frame_d)
+        self.create_c_matrix(c_1, self.frame_c)
+        self.create_d_matrix(d_1, b_1, self.frame_d)
 
-        self.show_matrix_on_frame(matrix, matrix, self.frame_res)
+        self.show_matrix_on_frame(c_1, matrix, self.frame_res)
 
         self.root.mainloop()
 
@@ -354,7 +390,7 @@ class Window:
 
         for tab_id in self.notebook.tabs():
             tab_text = self.notebook.tab(tab_id, "text")
-            if tab_text.startswith('D') or tab_text == 'Перестановка X*':
+            if tab_text.startswith('D') or tab_text == 'Оптимальное решение':
                 tab_widget = self.notebook.nametowidget(tab_id)
                 self.notebook.forget(tab_id)
                 tab_widget.destroy()
@@ -366,7 +402,7 @@ class Window:
             self.frame_d.append(ttk.Frame(self.notebook, style="Custom.TFrame"))
         for i in range(int(self.entry_k.get())):
             self.notebook.add(self.frame_d[i], text=f"D{i+1}")
-        self.notebook.add(self.frame_res, text="Перестановка X*")
+        self.notebook.add(self.frame_res, text="Оптимальное решение")
 
         self.create_d_matrix(matrix_d, vector, self.frame_d)
         self.show_matrix_on_frame(matrix, matrix, self.frame_res)
@@ -390,7 +426,7 @@ class Window:
 
         for tab_id in self.notebook.tabs():
             tab_text = self.notebook.tab(tab_id, "text")
-            if tab_text.startswith('D') or tab_text == 'Перестановка X*':
+            if tab_text.startswith('D') or tab_text == 'Оптимальное решение':
                 tab_widget = self.notebook.nametowidget(tab_id)
                 self.notebook.forget(tab_id)
                 tab_widget.destroy()
@@ -402,7 +438,7 @@ class Window:
             self.frame_d.append(ttk.Frame(self.notebook, style="Custom.TFrame"))
         for i in range(int(self.entry_k.get())):
             self.notebook.add(self.frame_d[i], text=f"D{i+1}")
-        self.notebook.add(self.frame_res, text="Перестановка X*")
+        self.notebook.add(self.frame_res, text="Оптимальное решение")
 
         self.create_d_matrix(matrix_d, vector, self.frame_d)
         self.show_matrix_on_frame(self.get_c_matrix(), self.get_c_matrix(), self.frame_res)
@@ -572,25 +608,19 @@ class Window:
 
         if(is_exists_sum_1):
             self.show_matrix_on_frame(c, x_sum_1, self.frame_res)
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.insert(0, str(f"{round(sum_1, 2)}"))
-            self.iter_entry_1.delete(0, tk.END)
-            self.iter_entry_1.insert(0, str(f"{round(iter_sum_1+1, 2)}"))
+            self.sum_label.config(text=str(f"{round(sum_1, 2)}"))
+            self.iter_label_1.config(text=str(f"{round(iter_sum_1+1, 2)}"))
 
         else:
             self.show_matrix_on_frame(c, np.zeros(c.shape), self.frame_res)
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.insert(0, "Решений нет")
-            # self.sum_entry.config(foreground='red')
-            self.iter_entry_1.delete(0, tk.END)
-            self.iter_entry_1.insert(0, str(f"{round(n_max, 2)}"))
+            self.sum_label.config(text="Решений нет")
+            # self.sum_label.config(foreground='red')
+            self.iter_label_1.config(text=str(f"{round(n_max, 2)}"))
 
         if (is_exists_sum_phi):
-            self.iter_entry_phi.delete(0, tk.END)
-            self.iter_entry_phi.insert(0, str(f"{round(iter_sum_phi+1, 2)}"))
+            self.iter_label_phi.config(text=str(f"{round(iter_sum_phi+1, 2)}"))
         else:
-            self.iter_entry_phi.delete(0, tk.END)
-            self.iter_entry_phi.insert(0, str(f"{round(n_max, 2)}"))
+            self.iter_label_phi.config(text=str(f"{round(n_max, 2)}"))
 
 
 
@@ -601,17 +631,13 @@ class Window:
             n_max = int(self.entry_n_max.get())
             if not (1 <= n <= 15 and 1 <= k <= 10 and 1 <= n_max <= 10000000 and 0 <= c_min < c_max <= 10000000):
                 raise ValueError
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.config(foreground='black')
-            self.iter_entry_1.delete(0, tk.END)
-            self.iter_entry_1.config(foreground='black')
-            self.iter_entry_phi.delete(0, tk.END)
-            self.iter_entry_phi.config(foreground='black')
+            self.sum_label.config(foreground='black')
+            self.iter_label_1.config(foreground='black')
+            self.iter_label_phi.config(foreground='black')
             return True
         except ValueError:
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.insert(0, "ERROR")
-            self.sum_entry.config(foreground='red')
+            self.sum_label.config(text="ERROR")
+            self.sum_label.config(foreground='red')
             return False
 
     def check_n_max(self, event=None):
@@ -619,23 +645,17 @@ class Window:
             n_max = int(self.entry_n_max.get())
             if not (1 <= n_max <= 10000000):
                 raise ValueError
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.config(foreground='black')
-            self.iter_entry_1.delete(0, tk.END)
-            self.iter_entry_1.config(foreground='black')
-            self.iter_entry_phi.delete(0, tk.END)
-            self.iter_entry_phi.config(foreground='black')
+            self.sum_label.config(foreground='black')
+            self.iter_label_1.config(foreground='black')
+            self.iter_label_phi.config(foreground='black')
             return True
         except ValueError:
-            self.sum_entry.delete(0, tk.END)
-            self.sum_entry.insert(0, "ERROR")
-            self.sum_entry.config(foreground='red')
-            self.iter_entry_1.delete(0, tk.END)
-            self.iter_entry_1.insert(0, "ERROR")
-            self.iter_entry_1.config(foreground='red')
-            self.iter_entry_phi.delete(0, tk.END)
-            self.iter_entry_phi.insert(0, "ERROR")
-            self.iter_entry_phi.config(foreground='red')
+            self.sum_label.config(text="ERROR")
+            self.sum_label.config(foreground='red')
+            self.iter_label_1.config(text="ERROR")
+            self.iter_label_1.config(foreground='red')
+            self.iter_label_phi.config(text="ERROR")
+            self.iter_label_phi.config(foreground='red')
             return False
     def on_close(self):
         self.root.destroy()
